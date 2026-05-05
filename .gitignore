@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
