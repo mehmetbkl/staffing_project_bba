@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Workforce Planner - Demand &amp; Forecast</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#341100",
+                        "on-secondary-container": "#003370",
+                        "on-primary-fixed": "#001b3d",
+                        "outline": "#74777f",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#708ab5",
+                        "on-background": "#191c1d",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container": "#edeeef",
+                        "background": "#f8f9fa",
+                        "on-secondary-fixed-variant": "#004491",
+                        "on-secondary-fixed": "#001a40",
+                        "secondary-container": "#659dfe",
+                        "tertiary-container": "#3d1500",
+                        "surface-container-low": "#f3f4f5",
+                        "inverse-on-surface": "#f0f1f2",
+                        "primary-container": "#002147",
+                        "secondary-fixed-dim": "#acc7ff",
+                        "secondary-fixed": "#d7e2ff",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#aec7f6",
+                        "inverse-primary": "#aec7f6",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-fixed": "#d6e3ff",
+                        "on-surface-variant": "#44474e",
+                        "surface-dim": "#d9dadb",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e1e3e4",
+                        "surface-bright": "#f8f9fa",
+                        "surface-tint": "#465f88",
+                        "primary": "#000a1e",
+                        "outline-variant": "#c4c6cf",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-tertiary-container": "#b97958",
+                        "secondary": "#115cb9",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#6c391d",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#180500",
+                        "surface": "#f8f9fa",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "0.5rem",
+                        "margin": "2rem",
+                        "base": "4px",
+                        "gutter": "1.5rem",
+                        "xl": "2.5rem",
+                        "lg": "1.5rem",
+                        "md": "1rem",
+                        "xs": "0.25rem"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "tabular-nums": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "tabular-nums": ["14px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "title-sm": ["18px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "display-lg": ["36px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row overflow-x-hidden font-body-md text-body-md">
+<!-- SideNavBar (Hidden on Mobile, Visible on md+) -->
+<nav class="hidden md:flex flex-col h-screen left-0 w-64 bg-surface-container-low dark:bg-primary-container text-secondary dark:text-secondary-fixed-dim font-label-caps text-label-caps border-r border-outline-variant dark:border-outline p-md gap-xs shrink-0 sticky top-0 z-50">
+<div class="flex items-center gap-sm mb-lg px-sm">
+<img alt="Corporate Logo" class="w-8 h-8 rounded-full object-cover" data-alt="A clean, minimalist abstract corporate logo mark composed of geometric intersecting shapes in deep navy blue and bright professional blue. Set against a pure white background, embodying modern enterprise software design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzc9EpR2B5t1xMvgfq9VTu826LOkHW4WZpn4QKjaIz6Ovxbj0ZStFAsYIKTfAjEiqt454XY1L5WWBoDZ857EqieGnuR7STvD8M01OKE-cUy1oT81iEuGK9Mqne4xxK2wTP86bd1MM1Os3c6hJ9qKqEgzlQpIBBDzFbPm7uoJY_wN45GMWL7hZkbhE1Bxz3bvPt2ojw3y4Woerc2EubOR_LjcNrRiosbZCQYZ_7XWM-UT-ZcRvUeiYJIxaiVh0IaXEMl2DT2q0erpfh"/>
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Workforce Planner</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-xs">North Region</p>
+</div>
+</div>
+<button class="bg-secondary text-on-secondary rounded px-md py-sm font-label-caps text-label-caps mb-lg hover:bg-on-secondary-fixed-variant transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">add</span>
+            Create Shift
+        </button>
+<div class="flex flex-col gap-base flex-grow">
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">calendar_view_day</span>
+                Shift Planner
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">event_note</span>
+                Weekly Schedule
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm bg-secondary-container text-on-secondary-container font-bold rounded-lg transition-all scale-95 duration-150" href="#">
+<span class="material-symbols-outlined fill">query_stats</span>
+                Forecasts
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">storefront</span>
+                Locations
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all mt-auto mb-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</div>
+<div class="flex flex-col gap-base border-t border-outline-variant pt-sm">
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+                Help Center
+            </a>
+<a class="flex items-center gap-sm px-sm py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin h-16 max-w-full bg-surface dark:bg-surface-container-low text-primary dark:text-primary-fixed-dim font-headline-md text-headline-md border-b border-outline-variant dark:border-outline sticky top-0 z-40">
+<div class="text-title-sm font-title-sm font-black tracking-tight text-primary dark:text-primary-fixed-dim md:hidden">
+                StaffingPro Enterprise
+            </div>
+<div class="hidden md:flex gap-lg items-center">
+<div class="text-title-sm font-title-sm font-black tracking-tight text-primary dark:text-primary-fixed-dim">
+                    StaffingPro Enterprise
+                </div>
+</div>
+<div class="flex items-center gap-md">
+<!-- Search Bar -->
+<div class="hidden lg:flex items-center bg-surface-container border border-outline-variant rounded px-sm py-xs">
+<span class="material-symbols-outlined text-outline text-[20px]">search</span>
+<input class="bg-transparent border-none outline-none text-body-sm font-body-sm ml-sm placeholder-outline w-48" placeholder="Search forecasts..." type="text"/>
+</div>
+<button class="text-label-caps font-label-caps text-secondary hover:bg-surface-container-high transition-colors duration-200 px-sm py-xs rounded">
+                    Switch Store
+                </button>
+<div class="flex items-center gap-sm">
+<button class="hover:bg-surface-container-high transition-colors duration-200 p-xs rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="hover:bg-surface-container-high transition-colors duration-200 p-xs rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">help_outline</span>
+</button>
+</div>
+<img alt="Manager Profile" class="w-8 h-8 rounded-full border border-outline-variant object-cover ml-sm cursor-pointer" data-alt="A professional headshot of a female store manager in her 30s with warm lighting. She is wearing a crisp corporate blue button-down shirt, set against a blurred modern office background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnEoDI-HxPu5udH33Ggu7cnXBdOAIhiJxfP5LYnQh8E3x1ocO0IOMqgrNdV75Wv9kwiK9MEJJBXPVmJWoVKGDtrhju3mzzpaEiu-mWQF70jmOIy5muCfvugPc-BfuhwH6tsp-dt-BQpaVs6aqD8d5sp0r4Bk-jTBkAL-9b52Mnuu3XAgS-KOpTmb_2Rk0BZvvFuIsf_n7PQleVUpgz7lq-x0WrCUXAT08BXLW2LLtF6hkabaSkWBLkAkT6j2ALBYuAx2XlCprvM-ha"/>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 p-md md:p-margin bg-background overflow-y-auto">
+<!-- Page Header & Global Actions -->
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-md mb-lg">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-background">Demand Forecast</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Tuesday, October 24th, 2023 · North Region Flagship</p>
+</div>
+<div class="flex gap-sm w-full lg:w-auto">
+<button class="flex-1 lg:flex-none border border-primary text-primary bg-surface hover:bg-surface-container rounded px-md py-sm font-label-caps text-label-caps transition-colors">
+                        Edit Model
+                    </button>
+<button class="flex-1 lg:flex-none bg-secondary text-on-secondary rounded px-md py-sm font-label-caps text-label-caps hover:bg-on-secondary-fixed-variant transition-colors shadow-[0_4px_10px_rgba(0,10,30,0.1)] flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                        Apply Recommended Staffing
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Factors Panel (Left Column) -->
+<div class="md:col-span-4 lg:col-span-3 flex flex-col gap-gutter">
+<!-- Weather Widget -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md">
+<h3 class="font-title-sm text-title-sm text-primary mb-md flex items-center gap-xs border-b border-outline-variant pb-xs">
+<span class="material-symbols-outlined text-secondary">cloud</span>
+                            External Factors
+                        </h3>
+<div class="flex items-center gap-md mb-sm">
+<div class="bg-secondary-container text-on-secondary-container p-sm rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined fill text-[32px]">thunderstorm</span>
+</div>
+<div>
+<div class="font-tabular-nums text-headline-md text-on-surface">62°</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Heavy Rain Expected</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant border-t border-outline-variant pt-sm mt-sm">
+<strong class="text-on-surface">Impact:</strong> Anticipate -15% foot traffic during morning hours.
+                        </p>
+</div>
+<!-- Event Widget -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md">
+<h3 class="font-title-sm text-title-sm text-primary mb-md flex items-center gap-xs border-b border-outline-variant pb-xs">
+<span class="material-symbols-outlined text-secondary">stadium</span>
+                            Local Events
+                        </h3>
+<div class="flex flex-col gap-sm">
+<div class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-error mt-xs">event_busy</span>
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">City Marathon</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Road closures 8AM - 2PM</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant border-t border-outline-variant pt-sm mt-xs">
+<strong class="text-on-surface text-error">Alert:</strong> Late shift arrivals likely delayed. Buffer needed.
+                            </p>
+</div>
+</div>
+<!-- Summary Widget -->
+<div class="bg-primary text-on-primary rounded-lg p-md shadow-[0_4px_10px_rgba(0,10,30,0.1)]">
+<h3 class="font-title-sm text-title-sm mb-md flex items-center gap-xs border-b border-on-primary-fixed-variant pb-xs">
+<span class="material-symbols-outlined text-secondary-fixed">insights</span>
+                            Daily Summary
+                        </h3>
+<div class="grid grid-cols-2 gap-sm">
+<div>
+<div class="font-label-caps text-label-caps text-secondary-fixed-dim">Predicted Traffic</div>
+<div class="font-tabular-nums text-title-sm mt-xs">4,250 <span class="text-[12px] font-normal text-error">-12%</span></div>
+</div>
+<div>
+<div class="font-label-caps text-label-caps text-secondary-fixed-dim">Rec. Hours</div>
+<div class="font-tabular-nums text-title-sm mt-xs">142.5 h</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Chart & Timeline (Right Column) -->
+<div class="md:col-span-8 lg:col-span-9 flex flex-col gap-gutter">
+<!-- Main Chart Area -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md h-[400px] flex flex-col">
+<div class="flex justify-between items-center mb-md border-b border-outline-variant pb-sm">
+<h3 class="font-title-sm text-title-sm text-primary flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary">monitoring</span>
+                                Demand vs. Supply Curve
+                            </h3>
+<div class="flex gap-sm font-label-caps text-label-caps">
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="text-on-surface-variant">Recommended Supply</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full border border-outline-variant bg-surface-container-highest"></div>
+<span class="text-on-surface-variant">Predicted Demand</span>
+</div>
+</div>
+</div>
+<!-- Placeholder for complex chart rendering -->
+<div class="flex-1 relative w-full border-b border-l border-outline-variant">
+<!-- Y-Axis Labels -->
+<div class="absolute -left-8 top-0 bottom-0 flex flex-col justify-between text-tabular-nums font-tabular-nums text-on-surface-variant text-[12px]">
+<span>30</span>
+<span>20</span>
+<span>10</span>
+<span>0</span>
+</div>
+<!-- Graph Area (Abstracted with CSS for structure) -->
+<div class="absolute inset-0 flex items-end justify-between px-md pb-xs">
+<!-- Bars representing demand -->
+<div class="w-[4%] h-[20%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[30%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[50%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[80%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[90%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[60%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[40%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[70%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[100%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[85%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[50%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<div class="w-[4%] h-[30%] bg-surface-container-highest border border-outline-variant rounded-t-sm relative"></div>
+<!-- Overlay SVG Line for Supply (Placeholder path) -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none">
+<path d="M 10 250 Q 50 200 100 150 T 200 100 T 300 50 T 400 120 T 500 80 T 600 20 T 700 40 T 800 150" fill="none" stroke="#115cb9" stroke-linecap="round" stroke-width="3"></path>
+<circle class="shadow-sm" cx="100" cy="150" fill="#115cb9" r="4"></circle>
+<circle class="shadow-sm" cx="300" cy="50" fill="#115cb9" r="4"></circle>
+<circle class="shadow-sm" cx="600" cy="20" fill="#115cb9" r="4"></circle>
+</svg>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="flex justify-between items-center text-tabular-nums font-tabular-nums text-on-surface-variant text-[12px] pt-xs pl-md">
+<span>8 AM</span>
+<span>10 AM</span>
+<span>12 PM</span>
+<span>2 PM</span>
+<span>4 PM</span>
+<span>6 PM</span>
+<span>8 PM</span>
+<span>10 PM</span>
+</div>
+</div>
+<!-- Recommended Staffing Actions List -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="px-md py-sm border-b border-outline-variant flex justify-between items-center bg-surface-container-low rounded-t-lg">
+<h3 class="font-title-sm text-title-sm text-primary flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary">engineering</span>
+                                Key Staffing Adjustments
+                            </h3>
+<span class="font-label-caps text-label-caps bg-surface-container-highest text-on-surface px-sm py-xs rounded">3 Suggested</span>
+</div>
+<div class="flex flex-col">
+<!-- Action Item 1 -->
+<div class="px-md py-sm border-b border-outline-variant flex items-center justify-between hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">Coverage Gap: 12 PM - 2 PM</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Lunch rush during marathon road closure.</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-tabular-nums text-body-sm text-primary bg-primary-fixed text-on-primary-fixed px-sm py-xs rounded">+2 Cashiers needed</span>
+<button class="text-secondary font-label-caps text-label-caps hover:underline">Review</button>
+</div>
+</div>
+<!-- Action Item 2 -->
+<div class="px-md py-sm border-b border-outline-variant flex items-center justify-between hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">Shift Extension: 4 PM - 6 PM</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Anticipated post-event traffic spike.</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-tabular-nums text-body-sm text-primary bg-primary-fixed text-on-primary-fixed px-sm py-xs rounded">+1 Floor Manager</span>
+<button class="text-secondary font-label-caps text-label-caps hover:underline">Review</button>
+</div>
+</div>
+<!-- Action Item 3 -->
+<div class="px-md py-sm flex items-center justify-between hover:bg-surface-container transition-colors rounded-b-lg">
+<div class="flex items-center gap-md">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+<div>
+<div class="font-title-sm text-title-sm text-on-surface">Overstaffing Risk: 8 AM - 10 AM</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Heavy rain suppressing morning footfall.</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-tabular-nums text-body-sm text-error bg-error-container text-on-error-container px-sm py-xs rounded">-1 Stock Clerk</span>
+<button class="text-secondary font-label-caps text-label-caps hover:underline">Review</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
