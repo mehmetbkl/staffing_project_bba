@@ -5,6 +5,7 @@ App-Shell mit dcc.Location-Routing.
 """
 
 from __future__ import annotations
+from datetime import datetime
 from dash import dcc, html
 
 from layouts.forecast_chart import render_forecast_chart
@@ -14,6 +15,7 @@ from layouts.staffing_actions import derive_actions_from_forecast, render_staffi
 from layouts.summary_widget import render_summary_widget
 from layouts.weather_widget import render_weather_widget
 from services.forecast_service import get_placeholder_forecast
+from services.shift_service import get_todays_shifts, get_shift_summary
 from utils.formatting import format_date_de
 
 
@@ -29,6 +31,113 @@ def _to_points(forecast) -> list[dict]:
         for p in forecast.points
     ]
 
+
+# ── SCHICHTÜBERSICHT ─────────────────────────────────────────────────────────
+
+_ROLE_AVATAR = {
+    "Kassierer":        "shift-row__avatar shift-row__avatar--kassierer",
+    "Abteilungsleiter": "shift-row__avatar shift-row__avatar--abteilungsleiter",
+    "Lagerist":         "shift-row__avatar shift-row__avatar--lagerist",
+}
+
+
+def _status_pill(status: str) -> html.Span:
+    labels = {
+        "active":  ("Aktiv",      "shift-pill shift-pill--active"),
+        "break":   ("Pause",      "shift-pill shift-pill--break"),
+        "coming":  ("Kommt noch", "shift-pill shift-pill--coming"),
+        "done":    ("Fertig",     "shift-pill shift-pill--done"),
+    }
+    text, cls = labels.get(status, ("–", "shift-pill"))
+    return html.Span(text, className=cls)
+
+
+def _shift_row(s: dict) -> html.Div:
+    avatar_cls = _ROLE_AVATAR.get(s["role"], "shift-row__avatar shift-row__avatar--kassierer")
+    return html.Div(className="shift-row", children=[
+        html.Div(s["id"], className=avatar_cls),
+        html.Div(className="shift-row__info", children=[
+            html.Span(s["name"], className="shift-row__name"),
+            html.Span(s["role"], className="shift-row__role"),
+        ]),
+        html.Span(f"{s['start']} – {s['end']}", className="shift-row__time"),
+        _status_pill(s["status"]),
+    ])
+
+
+def _build_shift_content() -> list:
+    """Baut den Inhalt der Schichtübersicht. Wird auch vom Callback genutzt."""
+    shifts  = get_todays_shifts()
+    summary = get_shift_summary()
+
+    active_rows = [s for s in shifts if s["status"] in ("active", "break")]
+    coming_rows = [s for s in shifts if s["status"] == "coming"]
+
+    coverage_pct = summary["coverage_pct"]
+    coverage_label = (
+        f"{summary['active_now']} von {summary['total_today']} Mitarbeitern aktiv"
+    )
+
+    rows: list = []
+
+    # Aktive Mitarbeiter
+    for s in active_rows:
+        rows.append(_shift_row(s))
+
+    # Separator nur wenn es auch kommende gibt
+    if coming_rows:
+        rows.append(
+            html.Div("Später heute", className="shift-overview__separator")
+        )
+        for s in coming_rows:
+            rows.append(_shift_row(s))
+
+    return [
+        html.Div(className="shift-overview__header", children=[
+            html.Div(className="shift-overview__title", children=[
+                html.Span("badge", className="material-symbols-outlined"),
+                "Aktuelle Schicht",
+            ]),
+            html.Div(className="shift-overview__header-right", children=[
+                html.Span(
+                    f"{summary['total_today']} Mitarbeiter heute",
+                    className="shift-overview__meta",
+                ),
+                html.Span(
+                    f"Stand: {datetime.now().strftime('%H:%M')} Uhr",
+                    className="shift-overview__time",
+                ),
+            ]),
+        ]),
+        html.Div(className="shift-overview__coverage", children=[
+            html.Div(className="shift-overview__coverage-label", children=[
+                html.Span("Personaldeckung"),
+                html.Span(
+                    f"{coverage_label} · {coverage_pct} %",
+                    className="shift-overview__coverage-value",
+                ),
+            ]),
+            html.Div(className="shift-overview__coverage-track", children=[
+                html.Div(
+                    className="shift-overview__coverage-fill",
+                    style={"width": f"{coverage_pct}%"},
+                ),
+            ]),
+        ]),
+        html.Div(className="shift-overview__list", children=rows),
+    ]
+
+
+def render_shift_overview() -> html.Div:
+    """Schichtübersicht-Card mit id für Auto-Refresh via Callback."""
+    return html.Div(
+        id="shift-overview-container",
+        className="shift-overview",
+        children=_build_shift_content(),
+    )
+
+
+# ── SEITEN ───────────────────────────────────────────────────────────────────
 
 def render_prognose_page() -> html.Div:
     """
@@ -140,6 +249,7 @@ def render_dashboard_page() -> html.Div:
                 ),
             ],
         ),
+        render_shift_overview(),
         html.A(
             className="dashboard-hint",
             href="/prognose",
@@ -170,6 +280,8 @@ def render_app_layout() -> html.Div:
         className="app-shell",
         children=[
             dcc.Location(id="url", refresh=False),
+            # Auto-Refresh alle 60 Sekunden für die Schichtübersicht
+            dcc.Interval(id="shift-interval", interval=60_000, n_intervals=0),
             render_sidebar(),
             html.Div(
                 className="main-wrapper",

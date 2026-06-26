@@ -1,6 +1,7 @@
 """
 callbacks/ui_callbacks.py
 Tab-Routing: URL → Seiteninhalt + aktiver Nav-Link.
+Auto-Refresh: Schichtübersicht wird jede Minute aktualisiert.
 """
 
 from __future__ import annotations
@@ -27,3 +28,12 @@ def register_ui_callbacks(app) -> None:
         if path == "/prognose":
             return render_prognose_page(), inactive, active
         return render_dashboard_page(), active, inactive
+
+    @app.callback(
+        Output("shift-overview-container", "children"),
+        Input("shift-interval", "n_intervals"),
+    )
+    def refresh_shift_overview(_):
+        """Aktualisiert die Schichtübersicht jede Minute automatisch."""
+        from layouts.dashboard import _build_shift_content
+        return _build_shift_content()
