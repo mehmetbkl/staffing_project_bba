@@ -1,0 +1,7 @@
+# StaffCast Dashboard – Abhängigkeiten
+# Installieren mit: pip install -r requirements.txt
+
+dash>=2.17.0
+plotly>=5.22.0
+pandas>=2.1.0
+requests>=2.31.0
