@@ -1,11 +1,11 @@
 # dashboard/services/shift_service.py
 #
-# Liest den Schichtplan aus data/employees.py und berechnet
-# automatisch den Status jedes Mitarbeiters anhand der aktuellen Uhrzeit.
+# Liest den Schichtplan aus dem staff-Schema der DB (Fallback: data/employees.py)
+# und berechnet automatisch den Status jedes Mitarbeiters anhand der Uhrzeit.
 
 from __future__ import annotations
 from datetime import datetime
-from data.employees import EMPLOYEES
+from data.employees import get_employees, employees_source
 
 # Pause wird angenommen wenn die Schicht > 4h ist und man in der Mitte ist
 BREAK_BUFFER_MINUTES = 30
@@ -66,7 +66,7 @@ def get_todays_shifts() -> list[dict]:
     weekday = now.strftime("%a")  # "Mon", "Tue", ...
 
     result = []
-    for emp in EMPLOYEES:
+    for emp in get_employees():
         shift = emp["shifts"].get(weekday)
         if shift is None:
             continue  # heute kein Dienst
@@ -110,4 +110,77 @@ def get_shift_summary() -> dict:
         "active_now":   active_now,
         "coming":       coming,
         "coverage_pct": coverage,
+    }
+
+
+# ── WOCHENPLAN (für Personalplanung-Tab) ─────────────────────────────────────
+
+WEEKDAY_ORDER = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+WEEKDAY_LABELS_DE = {
+    "Mon": "Mo", "Tue": "Di", "Wed": "Mi", "Thu": "Do",
+    "Fri": "Fr", "Sat": "Sa", "Sun": "So",
+}
+
+
+def _shift_hours(shift) -> float:
+    if shift is None:
+        return 0.0
+    (sh, sm), (eh, em) = (map(int, shift[0].split(":")), map(int, shift[1].split(":")))
+    return ((eh * 60 + em) - (sh * 60 + sm)) / 60.0
+
+
+def get_weekly_plan() -> list[dict]:
+    """
+    Vollständiger Wochenplan je Mitarbeiter.
+
+    Returns Liste von:
+        {
+          "id": "AK", "name": "Anna K.", "role": "Kassierer",
+          "days": {"Mon": "08:00–14:00" | None, ...},
+          "total_hours": 30.0
+        }
+    """
+    plan = []
+    for emp in get_employees():
+        days = {}
+        total = 0.0
+        for wd in WEEKDAY_ORDER:
+            shift = emp["shifts"].get(wd)
+            days[wd] = f"{shift[0]}–{shift[1]}" if shift else None
+            total += _shift_hours(shift)
+        plan.append({
+            "id": emp["id"],
+            "name": emp["name"],
+            "role": emp["role"],
+            "days": days,
+            "total_hours": round(total, 1),
+        })
+    return plan
+
+
+def get_weekly_coverage() -> list[dict]:
+    """Anzahl eingeplanter Mitarbeiter je Wochentag."""
+    employees = get_employees()
+    result = []
+    for wd in WEEKDAY_ORDER:
+        count = sum(1 for e in employees if e["shifts"].get(wd))
+        result.append({"weekday": wd, "label": WEEKDAY_LABELS_DE[wd], "count": count})
+    return result
+
+
+def get_team_summary() -> dict:
+    """Kennzahlen für die KPI-Leiste der Personalplanung."""
+    plan = get_weekly_plan()
+    total_hours = round(sum(p["total_hours"] for p in plan), 1)
+    roles = {}
+    for e in get_employees():
+        roles[e["role"]] = roles.get(e["role"], 0) + 1
+    cov = get_weekly_coverage()
+    busiest = max(cov, key=lambda c: c["count"])
+    return {
+        "headcount": len(plan),
+        "total_hours": total_hours,
+        "roles": roles,
+        "busiest_day": busiest["label"],
+        "busiest_count": busiest["count"],
     }

@@ -12,6 +12,8 @@ from futureexpert.checkin import (
 )
 from futureexpert.forecast import ReportConfig, ForecastingConfig, PreprocessingConfig
 
+from forecast_db import write_predictions, write_staffing_recommendations
+
 # ── KONFIGURATION ─────────────────────────────────────────────────────────────
 load_dotenv()
 HORIZON = 30  # 30 Tage voraus forecasten
@@ -176,5 +178,20 @@ for fc in results.forecast_results:
     print(f"\nModell: {best.model_name}")
     print(fc_df.to_string(index=False))
     print(f"\nGespeichert: {out_path}")
+
+    # ── 9. ERGEBNISSE IN DIE NEON DB SCHREIBEN ───────────────────────────────
+    # Damit das Dashboard die Prognose live aus gold.predictions zieht (statt
+    # aus der CSV) und zusätzlich Schicht-Personalempfehlungen vorliegen.
+    model_version = best.model_name or str(report_id.report_id)
+    print("\nSchreibe Prognose in NeonDB...")
+    try:
+        write_predictions(
+            fc_df,
+            model_name="futureEXPERT",
+            model_version=model_version,
+        )
+        write_staffing_recommendations(fc_df, model_version=model_version)
+    except Exception as exc:  # DB darf den Lauf nicht abbrechen – CSV bleibt erhalten
+        print(f"  WARN: DB-Write fehlgeschlagen ({exc}). CSV-Ausgabe bleibt nutzbar.")
 
 print("\nFertig!")

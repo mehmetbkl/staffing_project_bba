@@ -7,7 +7,7 @@ from __future__ import annotations
 import logging
 from dash import Input, Output
 from layouts.forecast_chart import build_forecast_figure
-from services.forecast_service import get_placeholder_forecast
+from services.forecast_service import get_forecast
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ def register_chart_callbacks(app) -> None:
     )
     def update_chart(n_intervals: int):
         logger.info("Chart-Update #%d", n_intervals)
-        forecast = get_placeholder_forecast()
+        forecast = get_forecast()
         return build_forecast_figure([
             {
                 "hour_label":         p.timestamp.strftime("%H:%M"),

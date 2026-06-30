@@ -1,0 +1,200 @@
+/* =============================================================
+   dark.css – Dunkelmodus
+   Aktiv über <html data-theme="dark">. Überschreibt die hellen
+   Flächen-/Textfarben des bestehenden Stylesheets gezielt.
+   Smooth-Übergang für angenehmes Umschalten.
+   ============================================================= */
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] #react-entry-point { background: #0e1116; color: #e3e5e8; }
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .kpi-card,
+html[data-theme="dark"] .chart-card,
+html[data-theme="dark"] .actions-card,
+html[data-theme="dark"] .shift-overview,
+html[data-theme="dark"] .plan-card,
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .main-canvas {
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+/* ---- Shell ---- */
+html[data-theme="dark"] .main-canvas { background: #0e1116; }
+html[data-theme="dark"] .sidebar { background: #151a21; border-right-color: #2a313b; }
+html[data-theme="dark"] .topbar { background: #0e1116; border-bottom-color: #2a313b; }
+html[data-theme="dark"] .topbar__title { color: #e3e5e8; }
+
+html[data-theme="dark"] .sidebar__brand-name { color: #e3e5e8; }
+html[data-theme="dark"] .sidebar__brand-sub { color: #9aa0aa; }
+html[data-theme="dark"] .sidebar__nav-link { color: #b6bcc6; }
+html[data-theme="dark"] .sidebar__nav-link:hover { background: #222a34; color: #ffffff; }
+html[data-theme="dark"] .sidebar__nav-link--active { background: #1d4e8f; color: #ffffff; }
+
+/* ---- Topbar-Buttons ---- */
+html[data-theme="dark"] .topbar__icon-btn {
+    background: #1a2029; border-color: #2a313b; color: #b6bcc6;
+}
+html[data-theme="dark"] .topbar__icon-btn:hover { background: #222a34; color: #ffffff; }
+html[data-theme="dark"] .topbar__icon-btn--accent { border-color: #4f8ce6; color: #8fb6f0; }
+html[data-theme="dark"] .topbar__icon-btn--accent:hover { background: #1d4e8f; color: #ffffff; }
+
+/* ---- Page header ---- */
+html[data-theme="dark"] .page-header__title { color: #e3e5e8; }
+html[data-theme="dark"] .page-header__subtitle { color: #9aa0aa; }
+
+/* ---- Karten allgemein ---- */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .kpi-card,
+html[data-theme="dark"] .chart-card,
+html[data-theme="dark"] .actions-card,
+html[data-theme="dark"] .shift-overview,
+html[data-theme="dark"] .plan-card {
+    background: #1a2029; border-color: #2a313b;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+html[data-theme="dark"] .card--dark { background: #060d1a; border-color: #1f3354; }
+
+html[data-theme="dark"] .card__header,
+html[data-theme="dark"] .chart-card__title,
+html[data-theme="dark"] .actions-card__header-title,
+html[data-theme="dark"] .plan-card__title,
+html[data-theme="dark"] .shift-overview__title { color: #e3e5e8; }
+html[data-theme="dark"] .card__header { border-bottom-color: #2a313b; }
+html[data-theme="dark"] .chart-card__header,
+html[data-theme="dark"] .shift-overview__header { border-bottom-color: #2a313b; }
+
+/* ---- KPI ---- */
+html[data-theme="dark"] .kpi-card__value { color: #f0f1f3; }
+html[data-theme="dark"] .kpi-card__label,
+html[data-theme="dark"] .kpi-card__sub { color: #9aa0aa; }
+html[data-theme="dark"] .kpi-card__icon,
+html[data-theme="dark"] .card__header-icon,
+html[data-theme="dark"] .chart-card__title .material-symbols-outlined,
+html[data-theme="dark"] .actions-card__header-title .material-symbols-outlined,
+html[data-theme="dark"] .plan-card__title .material-symbols-outlined { color: #6ea8f0; }
+
+/* ---- Actions ---- */
+html[data-theme="dark"] .actions-card__header { background: #151a21; border-bottom-color: #2a313b; }
+html[data-theme="dark"] .actions-card__badge { background: #2a313b; color: #cdd2da; }
+html[data-theme="dark"] .action-item { border-bottom-color: #2a313b; }
+html[data-theme="dark"] .action-item:hover { background: #222a34; }
+html[data-theme="dark"] .action-item__title { color: #e3e5e8; }
+html[data-theme="dark"] .action-item__desc { color: #9aa0aa; }
+html[data-theme="dark"] .action-item__tag--add { background: #1d3a63; color: #cfe0ff; }
+html[data-theme="dark"] .action-item__tag--remove { background: #5a1f1f; color: #ffd4d0; }
+
+/* ---- Chart-Legende ---- */
+html[data-theme="dark"] .chart-legend__item { color: #9aa0aa; }
+html[data-theme="dark"] .chart-legend__dot--demand { background: #2a313b; border-color: #3a424e; }
+
+/* ---- Schichtübersicht ---- */
+html[data-theme="dark"] .shift-overview__meta { color: #b6bcc6; }
+html[data-theme="dark"] .shift-overview__time { color: #9aa0aa; }
+html[data-theme="dark"] .shift-overview__coverage-label { color: #b6bcc6; }
+html[data-theme="dark"] .shift-overview__coverage-value { color: #e3e5e8; }
+html[data-theme="dark"] .shift-overview__coverage-track { background: #2a313b; }
+html[data-theme="dark"] .shift-row { background: #222a34; }
+html[data-theme="dark"] .shift-row:hover { background: #2a313b; }
+html[data-theme="dark"] .shift-row__name { color: #e3e5e8; }
+html[data-theme="dark"] .shift-row__role,
+html[data-theme="dark"] .shift-row__time { color: #9aa0aa; }
+html[data-theme="dark"] .shift-overview__separator { color: #9aa0aa; }
+html[data-theme="dark"] .shift-overview__separator::after { background: #2a313b; }
+
+/* ---- Dashboard-Hint ---- */
+html[data-theme="dark"] .dashboard-hint {
+    background: #1d3a63; border-color: #2a4b7d; color: #cfe0ff;
+}
+html[data-theme="dark"] .dashboard-hint:hover { background: #244a7d; }
+html[data-theme="dark"] .dashboard-hint .material-symbols-outlined { color: #8fb6f0; }
+
+/* ---- Demo-Banner ---- */
+html[data-theme="dark"] .demo-banner {
+    background: #2a2410; border-color: #5c4f1e; color: #e8d595;
+}
+html[data-theme="dark"] .demo-banner .material-symbols-outlined { color: #d4af37; }
+html[data-theme="dark"] .status-banner--live {
+    background: #102a1a; border-color: #2b5e3c; color: #7fd99a;
+}
+html[data-theme="dark"] .status-banner--live .material-symbols-outlined { color: #4ade80; }
+
+/* ---- Info-Modal ---- */
+html[data-theme="dark"] .info-modal__dialog { background: #1a2029; }
+html[data-theme="dark"] .info-modal__header { background: #151a21; border-bottom-color: #2a313b; }
+html[data-theme="dark"] .info-modal__title { color: #e3e5e8; }
+html[data-theme="dark"] .info-modal__close { color: #b6bcc6; }
+html[data-theme="dark"] .info-modal__close:hover { background: #2a313b; }
+html[data-theme="dark"] .info-modal__lead,
+html[data-theme="dark"] .info-modal__section-body { color: #cdd2da; }
+html[data-theme="dark"] .info-modal__muted { color: #9aa0aa; }
+html[data-theme="dark"] .info-source { border-bottom-color: #2a313b; }
+html[data-theme="dark"] .info-source__label { color: #e3e5e8; }
+html[data-theme="dark"] .info-source__value { color: #9aa0aa; }
+html[data-theme="dark"] .info-source__badge--demo { background: #2a313b; color: #b6bcc6; }
+html[data-theme="dark"] .info-threshold { background: #222a34; border-color: #2a313b; }
+html[data-theme="dark"] .info-threshold__unit { color: #9aa0aa; }
+html[data-theme="dark"] .info-modal__note { background: #1d3a63; color: #cfe0ff; }
+html[data-theme="dark"] .info-modal__note .material-symbols-outlined { color: #8fb6f0; }
+
+/* ---- Personalplanung-Grid ---- */
+html[data-theme="dark"] .plan-card__header { background: #151a21; border-bottom-color: #2a313b; }
+html[data-theme="dark"] .plan-grid__row { border-bottom-color: #2a313b; }
+html[data-theme="dark"] .plan-grid__row--head { background: #151a21; }
+html[data-theme="dark"] .plan-grid__corner,
+html[data-theme="dark"] .plan-grid__dayhead,
+html[data-theme="dark"] .plan-grid__hourhead { color: #b6bcc6; border-left-color: #2a313b; }
+html[data-theme="dark"] .plan-grid__dayhead--today { background: #1d3a63; color: #cfe0ff; }
+html[data-theme="dark"] .plan-grid__person-name { color: #e3e5e8; }
+html[data-theme="dark"] .plan-grid__person-role { color: #9aa0aa; }
+html[data-theme="dark"] .plan-grid__cell { border-left-color: #2a313b; }
+html[data-theme="dark"] .plan-grid__cell--today { background: #182536; }
+html[data-theme="dark"] .plan-grid__cell--off { color: #4a525e; }
+html[data-theme="dark"] .plan-grid__shift { background: #1d3a63; color: #cfe0ff; }
+html[data-theme="dark"] .plan-grid__hours { color: #6ea8f0; border-left-color: #2a313b; }
+
+/* ---- Coverage-Balken ---- */
+html[data-theme="dark"] .coverage-bar__count { color: #e3e5e8; }
+html[data-theme="dark"] .coverage-bar__track { background: #222a34; }
+html[data-theme="dark"] .coverage-bar__fill { background: #3a5a8f; }
+html[data-theme="dark"] .coverage-bar__fill--today { background: #4f8ce6; }
+html[data-theme="dark"] .coverage-bar__label { color: #9aa0aa; }
+
+/* ---- Modell-Insights ---- */
+html[data-theme="dark"] .pipeline__step--connected::before { background: #2a313b; }
+html[data-theme="dark"] .pipeline__node { background: #1d3a63; color: #8fb6f0; }
+html[data-theme="dark"] .pipeline__title { color: #e3e5e8; }
+html[data-theme="dark"] .pipeline__desc { color: #9aa0aa; }
+html[data-theme="dark"] .feature-card { background: #222a34; border-color: #2a313b; }
+html[data-theme="dark"] .feature-card__icon { color: #6ea8f0; }
+html[data-theme="dark"] .feature-card__title { color: #e3e5e8; }
+html[data-theme="dark"] .feature-card__desc { color: #9aa0aa; }
+html[data-theme="dark"] .model-rule__lead,
+html[data-theme="dark"] .model-confidence__text { color: #cdd2da; }
+html[data-theme="dark"] .model-status__row { border-bottom-color: #2a313b; }
+html[data-theme="dark"] .model-status__label { color: #e3e5e8; }
+html[data-theme="dark"] .model-status__badge--pending { background: #3a3410; color: #e8d595; }
+
+/* ---- Summary (dark card) bleibt dunkel, leichte Anpassung ---- */
+html[data-theme="dark"] .summary-item__value { color: #ffffff; }
+
+/* ---- Plotly-Charts lesbar halten ----
+   Die Figuren nutzen feste dunkle Schrift + transparenten Hintergrund.
+   Damit sie im Dark-Mode lesbar bleiben, bekommt der Graph-Bereich eine
+   helle Innenfläche (statt die Figuren neu zu bauen). */
+html[data-theme="dark"] .js-plotly-plot,
+html[data-theme="dark"] .chart-card .dash-graph {
+    background: #f4f6f8; border-radius: 8px; padding: 6px;
+}
+
+/* ---- Weather ---- */
+html[data-theme="dark"] .weather-temp { color: #e3e5e8; }
+html[data-theme="dark"] .weather-desc,
+html[data-theme="dark"] .weather-detail-row { color: #9aa0aa; }
+html[data-theme="dark"] .weather-detail-row { border-top-color: #2a313b; }
+html[data-theme="dark"] .weather-detail-label { color: #9aa0aa; }
+html[data-theme="dark"] .weather-detail-value { color: #e3e5e8; }
+html[data-theme="dark"] .weather-forecast-item { background: #222a34; color: #b6bcc6; }
+html[data-theme="dark"] .weather-loading { color: #9aa0aa; }
