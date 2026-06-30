@@ -9,12 +9,13 @@ from datetime import datetime
 from dash import dcc, html
 
 from layouts.forecast_chart import render_forecast_chart
+from layouts.info_modal import render_info_modal
 from layouts.navbar import render_navbar
 from layouts.sidebar import render_sidebar
 from layouts.staffing_actions import derive_actions_from_forecast, render_staffing_actions
 from layouts.summary_widget import render_summary_widget
 from layouts.weather_widget import render_weather_widget
-from services.forecast_service import get_placeholder_forecast
+from services.forecast_service import get_forecast
 from services.shift_service import get_todays_shifts, get_shift_summary
 from utils.formatting import format_date_de
 
@@ -143,9 +144,9 @@ def render_prognose_page() -> html.Div:
     """
     Prognose-Seite.
     Wetter: Live via Callback (Open-Meteo API).
-    Chart + Maßnahmen: aus Prognose (Platzhalter → wird durch ANN ersetzt).
+    Chart + Maßnahmen: aus der Prognose (gold.predictions → sonst CSV → Demo).
     """
-    forecast = get_placeholder_forecast()
+    forecast = get_forecast()
     points   = _to_points(forecast)
     actions  = derive_actions_from_forecast(points)
 
@@ -191,7 +192,7 @@ def render_dashboard_page() -> html.Div:
     Dashboard-Seite.
     Alle KPI-Werte kommen aus der Prognose – kein einziger Wert hardcodiert.
     """
-    forecast = get_placeholder_forecast()
+    forecast = get_forecast()
     points   = _to_points(forecast)
 
     peak = max(points, key=lambda p: p["predicted_visitors"]) if points else {}
@@ -282,6 +283,8 @@ def render_app_layout() -> html.Div:
             dcc.Location(id="url", refresh=False),
             # Auto-Refresh alle 60 Sekunden für die Schichtübersicht
             dcc.Interval(id="shift-interval", interval=60_000, n_intervals=0),
+            # Speichert die Theme-Wahl (hell/dunkel) über Reloads hinweg
+            dcc.Store(id="theme-store", storage_type="local"),
             render_sidebar(),
             html.Div(
                 className="main-wrapper",
@@ -290,9 +293,10 @@ def render_app_layout() -> html.Div:
                     html.Main(
                         className="main-canvas",
                         id="page-content",
-                        children=render_prognose_page(),
+                        children=render_dashboard_page(),
                     ),
                 ],
             ),
+            render_info_modal(),
         ],
     )

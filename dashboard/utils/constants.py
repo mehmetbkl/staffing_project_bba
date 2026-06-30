@@ -66,6 +66,9 @@ STAFFING_THRESHOLDS: list[tuple[int, int]] = [
 ]
 
 NAV_ITEMS: list[dict] = [
-    {"label": "Dashboard", "icon": "dashboard",   "href": "/"},
-    {"label": "Prognose",  "icon": "query_stats", "href": "/prognose"},
+    {"label": "Dashboard",       "icon": "dashboard",      "href": "/"},
+    {"label": "Prognose",        "icon": "query_stats",    "href": "/prognose"},
+    {"label": "Historie",        "icon": "show_chart",     "href": "/historie"},
+    {"label": "Personalplanung", "icon": "calendar_month", "href": "/personal"},
+    {"label": "Modell-Insights", "icon": "analytics",      "href": "/modell"},
 ]

@@ -47,11 +47,17 @@ dashboard/
 │   └── ui_callbacks.py           # Button-Interaktionen
 │
 ├── services/
+│   ├── db.py                     # Zentrale NeonDB-Anbindung (graceful Fallback)
 │   ├── weather_service.py        # Open-Meteo-Anbindung
-│   └── forecast_service.py       # Prognose-Platzhalter (→ ANN)
+│   ├── forecast_service.py       # Prognose: gold.predictions → CSV → Demo
+│   ├── history_service.py        # Historie aus raw.library_visitors / raw.weather
+│   └── shift_service.py          # Schichtplan aus staff-Schema (Fallback employees.py)
+│
+├── data/
+│   └── employees.py              # DB-Loader (staff.*) + statischer Fallback
 │
 └── utils/
-    ├── constants.py              # Konfiguration, WMO-Codes, Farben
+    ├── constants.py              # Konfiguration, WMO-Codes, Farben, Schwellenwerte
     └── formatting.py             # Datum, Einheiten, Zahlen
 ```
 
@@ -69,23 +75,23 @@ WEATHER_START_DATE: str = "2025-04-24"
 
 ---
 
-## ANN-Modell einbinden (für Nico)
+## Prognose-Anbindung
 
-Sobald `futureexpert_forecast.py` bereit ist, in `services/forecast_service.py`
-die Funktion `get_placeholder_forecast` ersetzen:
+Der `forecast_service` zieht die Prognose automatisch aus der besten verfügbaren
+Quelle (kein ANN):
 
-```python
-# Vorher (Platzhalter):
-from services.forecast_service import get_placeholder_forecast
-forecast = get_placeholder_forecast()
+1. **`gold.predictions`** – Tagesprognose aus dem Modell (futureEXPERT oder die
+   saisonale Baseline, siehe `models(Nico)/`). Bevorzugt.
+2. **`models(Nico)/forecast_besucher.csv`** – CSV-Ausgabe desselben Modells.
+3. **Demo-Profil** – festes Tagesprofil, falls weder DB noch CSV verfügbar.
 
-# Nachher (echtes Modell):
-from futureexpert_forecast import get_forecast
-forecast = get_forecast(date=target_date)
-```
+Die Tagesprognose wird über ein typisches Öffnungszeit-Profil (8–21 Uhr) auf
+Stunden verteilt. Das Interface (`DailySummary`, `ForecastPoint`) bleibt für alle
+Aufrufer identisch – egal aus welcher Quelle die Daten stammen.
 
-Die `DailySummary`- und `ForecastPoint`-Dataclasses definieren das erwartete
-Interface – das Modell muss dieselbe Struktur zurückgeben.
+Damit eine neue Prognose live erscheint, schreibt das Modell nach
+`gold.predictions` (siehe `models(Nico)/forecast_db.py`). Die Personalempfehlung
+landet zusätzlich in `gold.staffing_recommendations`.
 
 ---
 
@@ -110,45 +116,20 @@ PORT=8080 DEBUG=false python app.py
 - Callbacks registrieren über `register_*_callbacks(app)`
 - Neue Widgets → neue Datei in `layouts/`, neuer Callback in `callbacks/`
 
-## Datenstand & Platzhalter
+## Datenstand
 
-### Echte Anbindung (Live-Daten)
+Jeder Service folgt demselben Muster: **echte DB-/API-Daten, wenn verfügbar,
+sonst ein dokumentierter Demo-Fallback.** Welche Quelle gerade aktiv ist, zeigen
+die Banner auf den Seiten sowie der Info-Dialog (Topbar).
 
-**Wetter-Widget (Prognose-Seite)**
+| Bereich | Live-Quelle | Fallback |
+|---|---|---|
+| Wetter (Prognose-Seite) | `api.open-meteo.com`, Refresh alle 15 min | Fehlermeldung |
+| Historie & Trends | `raw.library_visitors`, `raw.weather` (NeonDB) | Demo-Profil |
+| Besucher-Prognose | `gold.predictions` → sonst Modell-CSV | Demo-Tagesprofil |
+| Personalempfehlung | Regel auf Prognose + `gold.staffing_recommendations` | – |
+| Schichtplan / Personal | `staff.employees`, `staff.shifts` (NeonDB) | `data/employees.py` |
 
-- Temperatur, Icon, Beschreibung, Wind, Regen, Bewölkung → Live von `api.open-meteo.com`
-- Stundenvorschau (6 Slots) → Live von `api.open-meteo.com`
-- Refresh alle 15 Minuten automatisch
-
-Das ist die einzige echte externe Datenquelle im System.
-
----
-
-### Platzhalter (hardcodiertes Tagesprofil)
-
-Alles andere kommt aus `get_placeholder_forecast()` in `services/forecast_service.py`. Das ist ein fester Array:
-
-```python
-_profile = [15, 25, 45, 75, 90, 85, 100, 110, 95, 80, 70, 60, 45, 30]
-```
-
-Konkret betroffen:
-
-| Angezeigtes Element | Quelle |
-|---|---|
-| Prognose-Chart (Balken) | Dieser Array |
-| Prognose-Chart (Linie, Mitarbeiter) | Staffing-Schwellenwerte auf diesem Array |
-| Konfidenzband | ±15 % auf diesem Array |
-| Tagesübersicht: „925 Besucher" | Summe des Arrays |
-| Tagesübersicht: „42 h" | Staffing-Stunden aus dem Array |
-| Tagesübersicht: „–12 %" | Hardcodiert in `forecast_service.py` |
-| Dashboard: alle 4 KPI-Karten | Berechnet aus demselben Array |
-| Empfohlene Maßnahmen | Regelbasiert auf demselben Array |
-
----
-
-### Was fehlt, damit alles echt wird
-
-**Kurzfristig (ohne Nicos Modell):** Die Bibliotheksdaten aus NeonDB (`raw.library_visitors`) könnten direkt in den `forecast_service` fließen — dann wären zumindest die historischen Besucherzahlen echt, auch wenn noch keine Prognose stattfindet.
-
-**Sobald Nicos Modell fertig ist:** `get_placeholder_forecast()` in `forecast_service.py` durch den Aufruf von `futureexpert_forecast.py` ersetzen. Das Interface (`DailySummary`, `ForecastPoint`) bleibt identisch — das ist der einzige Punkt, der geändert werden muss.
+Die DB-Anbindung läuft über `services/db.py` und liest `DATABASE_URL_ETL`
+aus der `.env` im Projekt-Root. Ist keine Verbindung möglich, läuft das gesamte
+Dashboard im Demo-Modus weiter.

@@ -29,6 +29,7 @@ app = dash.Dash(
     ],
 )
 
+from dash import Input, Output, State
 from layouts.dashboard import render_app_layout
 from callbacks.weather_callbacks import register_weather_callbacks
 from callbacks.chart_callbacks import register_chart_callbacks
@@ -39,6 +40,36 @@ app.layout = render_app_layout()
 register_weather_callbacks(app)
 register_chart_callbacks(app)
 register_ui_callbacks(app)
+
+# ── Theme-Toggle (clientseitig) ──────────────────────────────────────────────
+# 1) Klick auf den Button schaltet die gespeicherte Wahl um.
+app.clientside_callback(
+    """
+    function(n_clicks, stored) {
+        if (!n_clicks) {
+            return window.dash_clientside.no_update;
+        }
+        return (stored === 'dark') ? 'light' : 'dark';
+    }
+    """,
+    Output("theme-store", "data"),
+    Input("theme-toggle", "n_clicks"),
+    State("theme-store", "data"),
+    prevent_initial_call=True,
+)
+
+# 2) Gespeicherte Wahl auf <html> anwenden + Icon aktualisieren (auch beim Load).
+app.clientside_callback(
+    """
+    function(theme) {
+        const t = theme || 'light';
+        document.documentElement.setAttribute('data-theme', t);
+        return (t === 'dark') ? 'light_mode' : 'dark_mode';
+    }
+    """,
+    Output("theme-toggle-icon", "children"),
+    Input("theme-store", "data"),
+)
 
 server = app.server
 

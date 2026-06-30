@@ -59,8 +59,12 @@ CREATE TABLE IF NOT EXISTS gold.feature_store (
     temperature_c     NUMERIC(5,2),
     precipitation_mm  NUMERIC(6,2),
     weather_code      SMALLINT,
-    count_enter       INTEGER,
-    count_exit        INTEGER,
+    -- Platzhalter-Spalten für künftige Open-Data-Quellen (bleiben NULL bis ETL existiert)
+    pedestrian_schoenbornstrasse INTEGER,
+    event_count_nearby           SMALLINT,
+    event_max_visitors           INTEGER,
+    -- Besucherzahl der Bibliothek (= raw.library_visitors.count_enter, je Stunde)
+    library_visitor_count        INTEGER,
     created_at        TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -87,6 +91,7 @@ CREATE TABLE IF NOT EXISTS gold.staffing_recommendations (
     recommended_staff  SMALLINT NOT NULL,
     demand_level       TEXT,
     model_version      TEXT,
+    notes              TEXT,
     UNIQUE (date_local, shift)
 );
 

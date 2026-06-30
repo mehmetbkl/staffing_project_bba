@@ -1,0 +1,46 @@
+name: Täglicher ETL + Prognose
+
+# Läuft täglich. GitHub-Cron ist in UTC:
+#   22:00 UTC = 00:00 MESZ (deutsche Sommerzeit).
+# Hinweis: Im Winter (MEZ) entspricht das 23:00 Ortszeit. Bei Bedarf auf
+# '0 23 * * *' ändern oder beide Zeiten eintragen.
+on:
+  schedule:
+    - cron: "0 22 * * *"
+
+# Mehrere Läufe nicht parallel ausführen (Pipeline ist idempotent, aber sauberer).
+concurrency:
+  group: etl
+  cancel-in-progress: false
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Abhängigkeiten installieren
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: ETL + Feature-Store (Gold)
+        env:
+          DATABASE_URL_ETL: ${{ secrets.DATABASE_URL_ETL }}
+        run: python -m etl.pipeline
+
+      - name: Baseline-Prognose (gold.predictions + staffing_recommendations)
+        env:
+          # baseline_forecast nutzt DATABASE_URL_DS, fällt sonst auf ETL zurück.
+          DATABASE_URL_DS: ${{ secrets.DATABASE_URL_DS }}
+          DATABASE_URL_ETL: ${{ secrets.DATABASE_URL_ETL }}
+        run: python "models(Nico)/baseline_forecast.py"
