@@ -112,8 +112,11 @@ Details zur Aufgabenverteilung: [`Projektskizze.md`](Projektskizze.md#8-verteilu
 
 ---
 
+<<<<<<< HEAD
 ## 6 Weiterführende Dokumentation
 
 - [Quellenkatalog](docs/Quellenkatalog.md) – Bewertung aller Datenquellen
 - [Literaturreview](docs/Literaturreview.md) – Stand der Forschung zu wetterbasierter Nachfrageprognose
 - [Abschlussbericht](docs/Abschlussbericht.md) – Methodik, Ergebnisse, Limitationen (finale Fassung folgt)
+=======
+>>>>>>> 52b31bf810379f8a3bf56e489e6d4201babd9fa3
