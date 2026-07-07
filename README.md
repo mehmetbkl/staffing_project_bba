@@ -1,4 +1,3 @@
-# staffing_project_bba
 # Open Data für Staffing-Entscheidungen im Einzelhandel
 
 Business Analytics Teamprojekt, THWS Würzburg-Schweinfurt, SoSe 2026.
@@ -112,3 +111,7 @@ Kurzfassung:
 Details zur Aufgabenverteilung: [`Projektskizze.md`](Projektskizze.md#8-verteilung-individueller-verantwortung).
 
 ---
+
+
+
+
