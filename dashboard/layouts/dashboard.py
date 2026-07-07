@@ -125,8 +125,29 @@ def _build_shift_content() -> list:
                 ),
             ]),
         ]),
-        html.Div(className="shift-overview__list", children=rows),
+        html.Div(
+            className="shift-overview__list",
+            children=rows if rows else [_shift_empty_state(summary)],
+        ),
     ]
+
+
+def _shift_empty_state(summary: dict) -> html.Div:
+    """Freundlicher Leerzustand, wenn gerade niemand im Dienst ist."""
+    if summary["total_today"] == 0:
+        title = "Heute keine Schichten geplant"
+        sub = "Für heute ist niemand im Dienstplan eingetragen."
+    else:
+        title = "Aktuell niemand im Dienst"
+        sub = (f"Alle {summary['total_today']} heutigen Schichten sind beendet "
+               "oder starten später.")
+    return html.Div(className="shift-overview__empty", children=[
+        html.Span("nights_stay", className="material-symbols-outlined"),
+        html.Div(className="shift-overview__empty-text", children=[
+            html.Div(title, className="shift-overview__empty-title"),
+            html.Div(sub, className="shift-overview__empty-sub"),
+        ]),
+    ])
 
 
 def render_shift_overview() -> html.Div:

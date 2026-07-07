@@ -8,7 +8,7 @@ Auto-Refresh: Schichtübersicht jede Minute.
 
 from __future__ import annotations
 import logging
-from dash import Input, Output, ctx
+from dash import Input, Output, State, ctx
 
 from utils.constants import NAV_ITEMS
 
@@ -29,22 +29,25 @@ def register_ui_callbacks(app) -> None:
         Output("page-content", "children"),
         [Output(_nav_id(h), "className") for h in _NAV_KEYS],
         Input("url", "pathname"),
+        State("theme-store", "data"),
     )
-    def route(pathname: str):
+    def route(pathname: str, theme: str | None):
         from layouts.dashboard import render_dashboard_page, render_prognose_page
         from layouts.history_page import render_history_page
         from layouts.personal_page import render_personal_page
         from layouts.model_page import render_model_page
 
+        theme = theme if theme in ("light", "dark") else "light"
         active   = "sidebar__nav-link sidebar__nav-link--active"
         inactive = "sidebar__nav-link"
         path = (pathname or "/").rstrip("/") or "/"
-        logger.info("Route → %s", path)
+        logger.info("Route → %s (theme=%s)", path, theme)
 
+        # Historie hat statische Charts → Theme direkt mitgeben.
         pages = {
             "/":          render_dashboard_page,
             "/prognose":  render_prognose_page,
-            "/historie":  render_history_page,
+            "/historie":  lambda: render_history_page(theme=theme),
             "/personal":  render_personal_page,
             "/modell":    render_model_page,
         }
