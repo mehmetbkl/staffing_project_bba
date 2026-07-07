@@ -36,6 +36,7 @@ def register_ui_callbacks(app) -> None:
         from layouts.history_page import render_history_page
         from layouts.personal_page import render_personal_page
         from layouts.model_page import render_model_page
+        from layouts.coverage_page import render_coverage_page
 
         theme = theme if theme in ("light", "dark") else "light"
         active   = "sidebar__nav-link sidebar__nav-link--active"
@@ -43,10 +44,11 @@ def register_ui_callbacks(app) -> None:
         path = (pathname or "/").rstrip("/") or "/"
         logger.info("Route → %s (theme=%s)", path, theme)
 
-        # Historie hat statische Charts → Theme direkt mitgeben.
+        # Seiten mit statischen Charts → Theme direkt mitgeben.
         pages = {
             "/":          render_dashboard_page,
             "/prognose":  render_prognose_page,
+            "/deckung":   lambda: render_coverage_page(theme=theme),
             "/historie":  lambda: render_history_page(theme=theme),
             "/personal":  render_personal_page,
             "/modell":    render_model_page,
@@ -56,6 +58,18 @@ def register_ui_callbacks(app) -> None:
         content = renderer()
         classes = [active if h == active_path else inactive for h in _NAV_KEYS]
         return content, *classes
+
+    # ── Personalplan: Suche + Rollenfilter ───────────────────────────────────
+    @app.callback(
+        Output("plan-grid-container", "children"),
+        Input("plan-search", "value"),
+        Input("plan-role-filter", "value"),
+        prevent_initial_call=True,
+    )
+    def filter_plan(search: str | None, role: str | None):
+        from layouts.personal_page import build_plan_grid
+        # build_plan_grid liefert den Container; hier nur dessen children.
+        return build_plan_grid(search=search, role=role).children
 
     # ── Schichtübersicht Auto-Refresh ────────────────────────────────────────
     @app.callback(

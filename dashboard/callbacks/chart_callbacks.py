@@ -55,3 +55,16 @@ def register_chart_callbacks(app) -> None:
         theme = theme if theme in ("light", "dark") else "light"
         logger.info("Historie-Charts neu einfärben (theme=%s)", theme)
         return build_history_figures(theme)
+
+    # ── Deckungs-Chart beim Theme-Wechsel neu einfärben ──────────────────────
+    from layouts.coverage_page import build_coverage_figure
+
+    @app.callback(
+        Output("coverage-graph", "figure"),
+        Input("theme-store", "data"),
+        prevent_initial_call=True,
+    )
+    def update_coverage_chart(theme: str | None):
+        theme = theme if theme in ("light", "dark") else "light"
+        logger.info("Deckungs-Chart neu einfärben (theme=%s)", theme)
+        return build_coverage_figure(theme)
