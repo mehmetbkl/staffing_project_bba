@@ -86,6 +86,18 @@ def main() -> None:
     hol = _timed("Quelle: Holidays holen", fetch_holidays)
     _log(f"    Holidays-Zeilen: {len(hol)}")
 
+    # 4) INSERT-Test (idempotent, ON CONFLICT DO NOTHING -> kein Datenschaden):
+    #    schreibt die geholten Zeilen und misst die Zeit. Das ist der eigentliche
+    #    Flaschenhals-Test – mit executemany_mode sollte das Sekunden statt
+    #    Minuten dauern. Ueberspringbar mit  --no-write.
+    if "--no-write" in sys.argv:
+        _log("INSERT-Test uebersprungen (--no-write)")
+    else:
+        from etl.loaders.postgres import load_library, load_weather, load_holidays
+        _timed(f"INSERT: Library ({len(lib)} Zeilen)", lambda: load_library(lib))
+        _timed(f"INSERT: Weather ({len(wx)} Zeilen)", lambda: load_weather(wx))
+        _timed(f"INSERT: Holidays ({len(hol)} Zeilen)", lambda: load_holidays(hol))
+
     _log("=== Diagnose fertig – kein Haenger gefunden ===")
 
 
