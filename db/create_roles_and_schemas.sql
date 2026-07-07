@@ -47,15 +47,23 @@ CREATE SCHEMA IF NOT EXISTS monitoring;
 -- 3. BERECHTIGUNGEN AUF SCHEMAS
 -- -----------------------------------------------------------------------------
 
--- ETL: Schreibzugriff auf raw + processed
+-- ETL: Schreibzugriff auf raw + processed + gold
+-- Hinweis: Die ETL-Pipeline baut auch den Gold-Feature-Store
+-- (etl.transformers.gold_features -> gold.feature_store) und laeuft ueber
+-- DATABASE_URL_ETL (= etl_user). Ohne Gold-Schreibrechte scheitert der Lauf mit
+-- "permission denied for table feature_store". Daher braucht etl_user auch in
+-- gold INSERT/UPDATE/SELECT.
 GRANT USAGE ON SCHEMA raw       TO etl_user;
 GRANT USAGE ON SCHEMA processed TO etl_user;
+GRANT USAGE ON SCHEMA gold      TO etl_user;
 GRANT CREATE ON SCHEMA raw       TO etl_user;
 GRANT CREATE ON SCHEMA processed TO etl_user;
 GRANT INSERT, UPDATE, SELECT ON ALL TABLES IN SCHEMA raw       TO etl_user;
 GRANT INSERT, UPDATE, SELECT ON ALL TABLES IN SCHEMA processed TO etl_user;
+GRANT INSERT, UPDATE, SELECT ON ALL TABLES IN SCHEMA gold      TO etl_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA raw       GRANT INSERT, UPDATE, SELECT ON TABLES TO etl_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA processed GRANT INSERT, UPDATE, SELECT ON TABLES TO etl_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA gold      GRANT INSERT, UPDATE, SELECT ON TABLES TO etl_user;
 
 -- DS: Lesen überall, Schreiben in gold
 GRANT USAGE ON SCHEMA raw, processed, gold TO ds_user;
