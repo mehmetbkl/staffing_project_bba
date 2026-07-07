@@ -17,6 +17,11 @@ _DB_URL = os.environ.get("DATABASE_URL_ETL")
 engine = create_engine(
     _DB_URL,
     pool_pre_ping=True,
+    # Echtes Batching auf psycopg2-Ebene: fasst viele INSERT-Zeilen zu wenigen
+    # Netzwerk-Round-Trips zusammen (statt 1 Round-Trip je Zeile). Ohne das
+    # sendet SQLAlchemy trotz Parameterliste je Zeile einzeln -> bei >10.000
+    # Wetterzeilen sehr langsam.
+    executemany_mode="values_plus_batch",
     connect_args={
         "connect_timeout": 15,
         "options": "-c statement_timeout=120000",  # 120 s je Statement
