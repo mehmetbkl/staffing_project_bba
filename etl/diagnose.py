@@ -17,6 +17,14 @@ import os
 import sys
 import time
 
+# .env frueh laden, damit DATABASE_URL_ETL schon vor dem ersten Check verfuegbar
+# ist (sonst zeigt die Diagnose faelschlich 'gesetzt: False').
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
+
 try:
     sys.stdout.reconfigure(line_buffering=True)
 except Exception:
