@@ -7,6 +7,8 @@ name: Täglicher ETL + Prognose
 on:
   schedule:
     - cron: "0 22 * * *"
+  # Manueller Trigger: erlaubt den Lauf jederzeit per Button (Actions →
+  # "Täglicher ETL + Prognose" → "Run workflow"), ohne auf 00:00 zu warten.
   workflow_dispatch:
 
 # Mehrere Läufe nicht parallel ausführen (Pipeline ist idempotent, aber sauberer).
@@ -37,6 +39,9 @@ jobs:
       - name: ETL + Feature-Store (Gold)
         env:
           DATABASE_URL_ETL: ${{ secrets.DATABASE_URL_ETL }}
+          # Logs live streamen (nicht puffern), damit im Actions-Log sichtbar
+          # ist, an welchem Schritt die Pipeline haengt.
+          PYTHONUNBUFFERED: "1"
         run: python -m etl.pipeline
 
       - name: Baseline-Prognose (gold.predictions + staffing_recommendations)

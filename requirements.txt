@@ -3,6 +3,10 @@ psycopg2-binary==2.9.9
 SQLAlchemy==2.0.30
 
 # Daten
+# numpy explizit gepinnt (<2), damit gegen NumPy 1.x kompilierte Pakete
+# (pandas/numexpr/bottleneck/pyarrow) nicht mit NumPy 2.x brechen
+# ("module compiled using NumPy 1.x cannot be run in NumPy 2.x").
+numpy==1.26.4
 pandas==2.2.2
 requests==2.32.3
 holidays==0.46
