@@ -15,18 +15,22 @@ def fetch(limit=100, offset=0):
     r.raise_for_status()
     return r.json()
 
+# Opendatasoft erlaubt offset+limit <= 10000. Sicherheitskappe, damit die
+# Pagination unter keinen Umstaenden endlos laeuft (verhinderter Job-Timeout).
+MAX_OFFSET = 10_000
+
+
 def fetch_all():
     records = []
     offset  = 0
     limit   = 100
 
-    while True:
+    while offset < MAX_OFFSET:
         data  = fetch(limit=limit, offset=offset)
         batch = data.get("results", [])
         if not batch:
             break
         records.extend(batch)
-        #print(f"Fetched: {len(records)}")
         offset += limit
 
     df = pd.DataFrame(records)[["timestamp", "count_enter", "count_exit"]]
