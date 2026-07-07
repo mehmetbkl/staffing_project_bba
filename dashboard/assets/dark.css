@@ -180,14 +180,9 @@ html[data-theme="dark"] .model-status__badge--pending { background: #3a3410; col
 /* ---- Summary (dark card) bleibt dunkel, leichte Anpassung ---- */
 html[data-theme="dark"] .summary-item__value { color: #ffffff; }
 
-/* ---- Plotly-Charts lesbar halten ----
-   Die Figuren nutzen feste dunkle Schrift + transparenten Hintergrund.
-   Damit sie im Dark-Mode lesbar bleiben, bekommt der Graph-Bereich eine
-   helle Innenfläche (statt die Figuren neu zu bauen). */
-html[data-theme="dark"] .js-plotly-plot,
-html[data-theme="dark"] .chart-card .dash-graph {
-    background: #f4f6f8; border-radius: 8px; padding: 6px;
-}
+/* ---- Plotly-Charts ----
+   Die Figuren werden jetzt themen-bewusst gebaut (utils/chart_theme.py),
+   also keine helle Box mehr nötig – der Chart bleibt transparent. */
 
 /* ---- Weather ---- */
 html[data-theme="dark"] .weather-temp { color: #e3e5e8; }

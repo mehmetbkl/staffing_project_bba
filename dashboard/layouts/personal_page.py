@@ -4,13 +4,19 @@ Personalplanung: Wochen-Schichtplan aller Mitarbeiter aus employees.py.
 """
 
 from __future__ import annotations
-from dash import html
+from dash import dcc, html
 
 from services.shift_service import (
     WEEKDAY_LABELS_DE, WEEKDAY_ORDER,
     get_team_summary, get_weekly_coverage, get_weekly_plan,
 )
 from utils.formatting import format_date_de
+
+try:
+    from data.absences import get_absence_today
+except Exception:  # pragma: no cover
+    def get_absence_today(emp_id: str):
+        return None
 
 
 _ROLE_AVATAR = {
@@ -53,11 +59,17 @@ def _plan_row(p: dict) -> html.Div:
     avatar_cls = "shift-row__avatar " + _ROLE_AVATAR.get(
         p["role"], "shift-row__avatar--kassierer"
     )
+    absence = get_absence_today(p["id"])
+    name_children = [html.Span(p["name"], className="plan-grid__person-name")]
+    if absence:
+        name_children.append(
+            html.Span(absence["label"], className="plan-grid__absence-badge")
+        )
     cells = [
         html.Div(className="plan-grid__person", children=[
             html.Div(p["id"], className=avatar_cls),
             html.Div(className="plan-grid__person-info", children=[
-                html.Span(p["name"], className="plan-grid__person-name"),
+                html.Div(className="plan-grid__person-nameline", children=name_children),
                 html.Span(p["role"], className="plan-grid__person-role"),
             ]),
         ]),
@@ -120,6 +132,61 @@ def _source_banner() -> html.Div:
     ])
 
 
+def build_plan_grid(search: str | None = None, role: str | None = None) -> html.Div:
+    """Baut das Schichtplan-Grid, optional gefiltert nach Name und Rolle.
+
+    Wird beim Seitenaufbau und vom Filter-Callback (callbacks/ui_callbacks.py)
+    genutzt, damit Suche/Rollenfilter das Grid live aktualisieren.
+    """
+    plan = get_weekly_plan()
+    q = (search or "").strip().lower()
+
+    def matches(p: dict) -> bool:
+        if role and role != "Alle" and p["role"] != role:
+            return False
+        if q and q not in p["name"].lower() and q not in p["id"].lower():
+            return False
+        return True
+
+    filtered = [p for p in plan if matches(p)]
+
+    if not filtered:
+        body = [html.Div(
+            "Keine Mitarbeiter entsprechen den Filtern.",
+            className="plan-grid__noresult",
+        )]
+    else:
+        body = [_plan_header(), *[_plan_row(p) for p in filtered]]
+
+    return html.Div(id="plan-grid-container", className="plan-grid", children=body)
+
+
+def _plan_controls(plan: list[dict]) -> html.Div:
+    roles = sorted({p["role"] for p in plan})
+    options = [{"label": "Alle Rollen", "value": "Alle"}] + [
+        {"label": r, "value": r} for r in roles
+    ]
+    return html.Div(className="plan-controls", children=[
+        html.Div(className="plan-controls__search", children=[
+            html.Span("search", className="material-symbols-outlined"),
+            dcc.Input(
+                id="plan-search",
+                type="text",
+                placeholder="Mitarbeiter suchen …",
+                debounce=False,
+                className="plan-controls__input",
+            ),
+        ]),
+        dcc.Dropdown(
+            id="plan-role-filter",
+            options=options,
+            value="Alle",
+            clearable=False,
+            className="plan-controls__dropdown",
+        ),
+    ])
+
+
 def render_personal_page() -> html.Div:
     plan = get_weekly_plan()
     s = get_team_summary()
@@ -152,11 +219,9 @@ def render_personal_page() -> html.Div:
                     html.Span("calendar_month", className="material-symbols-outlined"),
                     "Wochen-Schichtplan",
                 ]),
+                _plan_controls(plan),
             ]),
-            html.Div(className="plan-grid", children=[
-                _plan_header(),
-                *[_plan_row(p) for p in plan],
-            ]),
+            build_plan_grid(),
         ]),
 
         _coverage_bar(),

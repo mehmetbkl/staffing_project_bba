@@ -7,6 +7,12 @@ from __future__ import annotations
 from datetime import datetime
 from data.employees import get_employees, employees_source
 
+try:
+    from data.absences import get_absence_today
+except Exception:  # pragma: no cover
+    def get_absence_today(emp_id: str):
+        return None
+
 # Pause wird angenommen wenn die Schicht > 4h ist und man in der Mitte ist
 BREAK_BUFFER_MINUTES = 30
 
@@ -72,17 +78,20 @@ def get_todays_shifts() -> list[dict]:
             continue  # heute kein Dienst
 
         start, end = shift
+        absence = get_absence_today(emp["id"])
+        status = "absent" if absence else _get_status(start, end, now)
         result.append({
-            "id":     emp["id"],
-            "name":   emp["name"],
-            "role":   emp["role"],
-            "start":  start,
-            "end":    end,
-            "status": _get_status(start, end, now),
+            "id":            emp["id"],
+            "name":          emp["name"],
+            "role":          emp["role"],
+            "start":         start,
+            "end":           end,
+            "status":        status,
+            "absence_label": absence["label"] if absence else None,
         })
 
-    # Sortierung: aktive zuerst, dann Pause, dann kommend, dann fertig
-    order = {"active": 0, "break": 1, "coming": 2, "done": 3}
+    # Sortierung: aktive zuerst, dann Pause, kommend, fertig, abwesend zuletzt
+    order = {"active": 0, "break": 1, "coming": 2, "done": 3, "absent": 4}
     result.sort(key=lambda x: (order[x["status"]], x["start"]))
     return result
 
@@ -101,12 +110,16 @@ def get_shift_summary() -> dict:
     """
     shifts      = get_todays_shifts()
     total       = len(shifts)
+    absent      = sum(1 for s in shifts if s["status"] == "absent")
+    planned     = total - absent  # tatsächlich verfügbar (ohne Abwesende)
     active_now  = sum(1 for s in shifts if s["status"] in ("active", "break"))
     coming      = sum(1 for s in shifts if s["status"] == "coming")
-    coverage    = round(active_now / total * 100) if total > 0 else 0
+    coverage    = round(active_now / planned * 100) if planned > 0 else 0
 
     return {
         "total_today":  total,
+        "planned":      planned,
+        "absent":       absent,
         "active_now":   active_now,
         "coming":       coming,
         "coverage_pct": coverage,
