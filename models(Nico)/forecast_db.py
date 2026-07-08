@@ -138,6 +138,7 @@ def write_staffing_recommendations(
     forecast_df: pd.DataFrame,
     model_version: str,
     engine=None,
+    hourly_profile: pd.DataFrame | None = None,
 ) -> int:
     """
     Leitet je Prognosetag und Schicht eine Personalempfehlung ab und schreibt
@@ -161,11 +162,18 @@ def write_staffing_recommendations(
                 else _date.fromisoformat(str(r.timestamp_local)[:10])
             day_total = float(r.forecast)
 
-            # Stundenverteilung 8..21
-            hourly = {
-                _OPEN_HOUR + i: day_total * w / shape_sum
-                for i, w in enumerate(_HOURLY_SHAPE)
-            }
+            weekday = day.isoweekday()  # 1=Mo .. 7=So
+            if hourly_profile is not None and weekday in hourly_profile.index:
+                hourly = {
+                    int(h): day_total * float(s)
+                    for h, s in hourly_profile.loc[weekday].items()
+                    if float(s) > 0
+                }
+            else:
+                hourly = {
+                    _OPEN_HOUR + i: day_total * w / shape_sum
+                    for i, w in enumerate(_HOURLY_SHAPE)
+                }
 
             for shift_name, start, end in _SHIFTS:
                 hours = [h for h in hourly if start.hour <= h < end.hour]
