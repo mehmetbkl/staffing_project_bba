@@ -104,12 +104,4 @@ Aus dem Literaturüberblick lassen sich drei Implikationen für das Projekt able
 > zu Agnew & Thornes, Badorf & Hoberg sowie Martinez-de-Albeniz & Belkaid nach Möglichkeit an
 > den Originalpublikationen zu verifizieren, statt nur über Sekundärzitate.
 
----
 
-## 7 Offene Punkte
-
-- [ ] Bibliotheksspezifische Literatur ergänzen (Nutzungsverhalten öffentlicher Bibliotheken,
-      falls vorhanden – aktuell nur Einzelhandelsliteratur berücksichtigt)
-- [ ] Nach Abschluss von Nicos Modellevaluation: eigene Feature-Importance-Ergebnisse den
-      hier zitierten Effektgrößen gegenüberstellen (Kapitel 5 im Abschlussbericht)
-- [ ] Zitierstil festlegen (z. B. APA) und einheitlich im Abschlussbericht anwenden

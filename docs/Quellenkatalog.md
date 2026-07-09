@@ -134,7 +134,4 @@ bildet Mitarbeitende und Schichten ab.
 | Bibliotheksbesucher Hubland | Zielvariable (Ground Truth) | `raw.library_visitors` |
 | Interne Personal-/Schichtdaten | Staffing-Logik | `staff.*` |
 
-**Offene Punkte für die finale Version dieses Katalogs:**
-- Prüfen, ob Event-Daten (Abschnitt 6) im finalen Feature-Set doch verwendet wurden
-- Lizenz-Attribution für Open-Meteo im Abschlussbericht / Impressum ergänzen
-- Datenqualität der Bibliotheksdaten (Lücken, Ausreißer) kurz quantifizieren, sobald Nico die Evaluation abgeschlossen hat
+
