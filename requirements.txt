@@ -1,18 +1,33 @@
-# Datenbank
-psycopg2-binary==2.9.9
-SQLAlchemy==2.0.30
+# ===========================================================================
+# StaffCast – Basis-Abhaengigkeiten (ETL-Pipeline + Baseline-Prognose)
+#
+# Getestet mit Python 3.10 - 3.13  (empfohlen: 3.12, wie in der CI).
+# Installation:  pip install -r requirements.txt
+#
+# WARUM VERSIONS-BEREICHE STATT FESTER PINS?
+# Pakete mit C-Erweiterungen (numpy, pandas, psycopg2) werden als vorkompilierte
+# "Wheels" pro Python-Version veroeffentlicht. Ein fester Pin wie numpy==1.26.4
+# oder pandas==2.2.2 hat KEIN Wheel fuer Python 3.13+. Auf einem Rechner mit
+# neuerem Python versucht pip dann, aus dem Quellcode zu bauen -> das schlaegt
+# ohne C/C++-Buildtools fehl (genau der Grund, warum die Installation bei
+# Kommiliton:innen "nicht laeuft"). Die Bereiche unten lassen pip automatisch
+# die passende, vorkompilierte Version fuer das installierte Python waehlen.
+# ===========================================================================
 
-# Daten
-# numpy explizit gepinnt (<2), damit gegen NumPy 1.x kompilierte Pakete
-# (pandas/numexpr/bottleneck/pyarrow) nicht mit NumPy 2.x brechen
-# ("module compiled using NumPy 1.x cannot be run in NumPy 2.x").
-numpy==1.26.4
-pandas==2.2.2
-requests==2.32.3
-holidays==0.46
+# --- Datenbank ---
+psycopg2-binary>=2.9.10,<3     # 2.9.10 = erste Version mit Wheels fuer Python 3.13
+SQLAlchemy>=2.0.36,<2.1
 
-# Qualität / Linting
-black==24.4.2
+# --- Daten ---
+# numpy 2.x ist hier bewusst erlaubt: kein Modul importiert numpy direkt, und
+# pandas>=2.2.3 ist gegen numpy 2 gebaut. Erst dadurch gibt es Wheels fuer 3.13.
+numpy>=1.26,<3
+pandas>=2.2.3,<3               # 2.2.3 = erste Version mit Wheels fuer Python 3.13
+requests>=2.32,<3
+holidays==0.46                 # reines Python (laeuft ueberall); API bewusst stabil
 
-# Konfiguration
-python-dotenv==1.0.1
+# --- Konfiguration ---
+python-dotenv>=1.0,<2
+
+# --- Qualitaet / Linting (nur fuer die Entwicklung, nicht zum Ausfuehren noetig) ---
+black>=24.4.2,<25

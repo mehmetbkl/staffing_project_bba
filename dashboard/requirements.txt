@@ -1,12 +1,23 @@
-# StaffCast Dashboard – Abhängigkeiten
-# Installieren mit: pip install -r requirements.txt
+# ===========================================================================
+# StaffCast Dashboard – Abhaengigkeiten
+# Getestet mit Python 3.10 - 3.13.  Installation:  pip install -r requirements.txt
+#
+# Versionsbereiche statt fester Pins, damit pip fuer das installierte Python
+# passende, vorkompilierte Wheels zieht (sonst schlaegt die Installation auf
+# Rechnern mit neuerem Python fehl). Die Grenzen fuer pandas/SQLAlchemy/psycopg2
+# sind absichtlich identisch zur Basis-requirements.txt im Projekt-Root, damit
+# es bei gemeinsamer Installation keine Versionskonflikte gibt.
+# ===========================================================================
 
-dash>=2.17.0
-plotly>=5.22.0
-pandas>=2.1.0
-requests>=2.31.0
+# --- Dashboard-Framework ---
+dash>=2.17,<3
+plotly>=5.22,<6
 
-# DB-Anbindung (NeonDB) – optional; ohne sie läuft das Dashboard im Demo-Modus
-sqlalchemy>=2.0.0
-psycopg2-binary>=2.9.0
-python-dotenv>=1.0.0
+# --- Daten ---
+pandas>=2.2.3,<3
+
+# --- DB-Anbindung (NeonDB) – optional; ohne sie laeuft das Dashboard im Demo-Modus ---
+SQLAlchemy>=2.0.36,<2.1
+psycopg2-binary>=2.9.10,<3
+python-dotenv>=1.0,<2
+requests>=2.32,<3

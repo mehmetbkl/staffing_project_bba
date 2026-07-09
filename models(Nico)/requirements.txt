@@ -1,0 +1,18 @@
+# ===========================================================================
+# OPTIONAL: futureEXPERT-Prognosemodell  (models(Nico)/futureexpert_forecast.py)
+#
+# Nur noetig, wenn statt der Baseline-Prognose das futureEXPERT-Modell genutzt
+# wird. Fuer ETL-Pipeline, Dashboard und Baseline-Prognose ist dieses Paket
+# NICHT erforderlich (deshalb steht es bewusst nicht in der Haupt-requirements.txt).
+#
+# !!! PYTHON-VERSION BEACHTEN !!!
+# futureexpert verlangt intern numpy<2.0.0 . numpy<2 gibt es nur als Wheel bis
+# Python 3.12. Dieses Modell laeuft daher ausschliesslich mit Python 3.9 - 3.12
+# (empfohlen: 3.12). Auf Python 3.13+ ist es nicht installierbar.
+#
+# Installation (Basis zuerst, dann diese Datei):
+#     pip install -r ../requirements.txt
+#     pip install -r requirements.txt
+# ===========================================================================
+
+futureexpert>=3.1,<4

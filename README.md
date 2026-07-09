@@ -46,26 +46,44 @@ Jede Komponente hat ihre eigene, ausführliche README:
 
 ## 2 Quickstart
 
+> **Python-Version:** getestet mit **Python 3.10 – 3.13**, empfohlen **3.12** (wie in
+> der CI). Bitte immer eine **virtuelle Umgebung** nutzen, damit die Versionen
+> sauber isoliert sind. Prüfen mit `python --version`.
+
 ```bash
 # 1. Repository klonen
 git clone https://github.com/mehmetbkl/staffing_project_bba.git
 cd staffing_project_bba
 
-# 2. Abhängigkeiten installieren
+# 2. Virtuelle Umgebung anlegen und aktivieren
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+# 3. pip aktualisieren (wichtig – alte pip-Versionen finden neue Wheels nicht)
+python -m pip install --upgrade pip
+
+# 4. Abhängigkeiten installieren
 pip install -r requirements.txt
 
-# 3. .env anlegen (siehe .env.example) – DB-Zugangsdaten eintragen
+# 5. .env anlegen (siehe .env.example) – DB-Zugangsdaten eintragen
 
-# 4. ETL einmalig ausführen
+# 6. ETL einmalig ausführen
 python -m etl.pipeline
 
-# 5. Dashboard starten
+# 7. Dashboard starten
 cd dashboard
 pip install -r requirements.txt
 python app.py
 ```
 
 Dashboard danach erreichbar unter `http://localhost:8050`.
+
+> **Optional – futureEXPERT-Modell:** Das alternative Prognosemodell
+> (`models(Nico)/futureexpert_forecast.py`) benötigt zusätzlich das Paket
+> `futureexpert`, das intern `numpy<2` verlangt und deshalb **nur mit Python
+> 3.9 – 3.12** läuft. Installation nur bei Bedarf:
+> `pip install -r "models(Nico)/requirements.txt"`. Für ETL, Dashboard und die
+> Baseline-Prognose wird es **nicht** gebraucht.
 
 ---
 
