@@ -32,7 +32,7 @@ Quellenauswahl in der ETL-Pipeline (`etl/sources/`).
 | **Historie** | Archiv-Endpoint zusätzlich zu Forecast-Endpoint |
 | **Lizenz** | CC BY 4.0 (Attribution erforderlich) |
 | **Datenqualität** | gut, basiert auf mehreren Wettermodellen (u. a. DWD ICON) |
-| **Im Projekt genutzt?** | ✅ Ja – `etl/sources/weather.py`, Tabelle `raw.weather` |
+| **Im Projekt genutzt?** |  Ja – `etl/sources/weather.py`, Tabelle `raw.weather` |
 | **Anmerkung** | DWD Climate Data Center als alternative/ergänzende Quelle geprüft, aber wegen komplexerer Zugriffsstruktur nicht genutzt. |
 
 ---
@@ -46,7 +46,7 @@ Quellenauswahl in der ETL-Pipeline (`etl/sources/`).
 | **Granularität** | Bundesland (Bayern), Tagesebene |
 | **Lizenz** | MIT-Lizenz, frei nutzbar |
 | **Datenqualität** | sehr zuverlässig, gepflegte Community-Bibliothek |
-| **Im Projekt genutzt?** | ✅ Ja – `etl/sources/holidays.py`, Tabelle `processed.holidays` |
+| **Im Projekt genutzt?** |  Ja – `etl/sources/holidays.py`, Tabelle `processed.holidays` |
 | **Anmerkung** | Deckt gesetzliche Feiertage ab; Schulferien Bayern ggf. separat zu prüfen/ergänzen. |
 
 ---
@@ -59,7 +59,7 @@ Quellenauswahl in der ETL-Pipeline (`etl/sources/`).
 | **Zugang** | intern über Projektpartner |
 | **Granularität** | stündlich |
 | **Lizenz** | projektintern, nicht öffentlich weiterverwendbar |
-| **Im Projekt genutzt?** | ✅ Ja – `etl/sources/library.py`, Tabelle `raw.library_visitors` |
+| **Im Projekt genutzt?** |  Ja – `etl/sources/library.py`, Tabelle `raw.library_visitors` |
 | **Anmerkung** | Dient als Zielvariable (Ground Truth) für das Prognosemodell, ersetzt die in der Projektskizze noch offene Frage nach internen Unternehmensdaten. |
 
 ---
@@ -73,7 +73,7 @@ Quellenauswahl in der ETL-Pipeline (`etl/sources/`).
 | **Granularität** | stündlich bzw. täglich |
 | **Lizenz** | offen (Open-Data-Portal Würzburg) |
 | **Datenqualität** | lange Zeitreihe (Schönbornstraße), aber andere Standorte als der Projektstandort (Hubland) |
-| **Im Projekt genutzt?** | ❌ Nein – als mögliche Validierungsquelle geprüft, aber räumlich nicht deckungsgleich mit dem Bibliotheksstandort |
+| **Im Projekt genutzt?** |  Nein – als mögliche Validierungsquelle geprüft, aber räumlich nicht deckungsgleich mit dem Bibliotheksstandort |
 
 ---
 
@@ -85,7 +85,7 @@ Quellenauswahl in der ETL-Pipeline (`etl/sources/`).
 | **Zugang** | Open-Data-Portal, API |
 | **Granularität** | Event-Level, Stadt Würzburg |
 | **Lizenz** | offen |
-| **Im Projekt genutzt?** | ❌ Nein (Stand aktueller Repo-Stand) |
+| **Im Projekt genutzt?** |  Nein (Stand aktueller Repo-Stand) |
 | **Anmerkung** | Als Feature „Event-Distanzmaß" in der Projektskizze vorgesehen (Kap. 3.2); im finalen Feature-Set (`etl/transformers/gold_features.py`) prüfen, ob umgesetzt. Falls nicht: als Ausblick im Abschlussbericht dokumentieren. |
 
 ---
@@ -98,7 +98,7 @@ Quellenauswahl in der ETL-Pipeline (`etl/sources/`).
 | **Zugang** | Open-Data-Portal, CSV |
 | **Granularität** | jährlich, Stadtbezirk |
 | **Lizenz** | offen |
-| **Im Projekt genutzt?** | ❌ Nein (Stand aktueller Repo-Stand) |
+| **Im Projekt genutzt?** |  Nein (Stand aktueller Repo-Stand) |
 | **Anmerkung** | Eher für standortübergreifende Skalierung relevant (mehrere Filialen); für MVP mit einem Standort (Hubland) von geringerer Priorität – siehe Risikotabelle „Scope Creep" in der Projektskizze. |
 
 ---
@@ -110,7 +110,7 @@ Quellenauswahl in der ETL-Pipeline (`etl/sources/`).
 | **Quelle** | Hystreet.com, Google Popular Times |
 | **Zugang** | API bzw. Scraping (rechtlich/technisch aufwändiger) |
 | **Lizenz** | Hystreet: teils kostenpflichtig / eingeschränkt; Google Popular Times: kein offizielles API, nur Scraping |
-| **Im Projekt genutzt?** | ❌ Nein |
+| **Im Projekt genutzt?** |  Nein |
 | **Anmerkung** | In der Projektskizze (Kap. 6.1) als mögliche Ground-Truth-Referenz genannt; wegen Zugriffsbeschränkungen nicht umgesetzt. Interne Bibliotheksdaten übernehmen stattdessen die Ground-Truth-Funktion (siehe Abschnitt 4). |
 
 ---
