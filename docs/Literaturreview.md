@@ -98,10 +98,5 @@ Aus dem Literaturüberblick lassen sich drei Implikationen für das Projekt able
 - *Better retail demand planning and forecasting with events*, PredictHQ, 2022.
 - Open-Meteo, DWD Climate Data Center, Hystreet.com, GovData.de – als Datenquellen bereits im Quellenkatalog (`docs/Quellenkatalog.md`) dokumentiert.
 
-> **Hinweis:** Die Web-Quellen sind überwiegend Praxis-/Branchenartikel, keine peer-reviewten
-> Papers (Ausnahme: die Studien in Abschnitt 2/3, die aus akademischen Journals bzw.
-> ResearchGate stammen). Für den finalen Abschlussbericht empfiehlt es sich, die Kernaussagen
-> zu Agnew & Thornes, Badorf & Hoberg sowie Martinez-de-Albeniz & Belkaid nach Möglichkeit an
-> den Originalpublikationen zu verifizieren, statt nur über Sekundärzitate.
 
 
