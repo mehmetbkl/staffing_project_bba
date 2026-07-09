@@ -1,0 +1,153 @@
+/* =============================================================
+   zzzz-features.css – Styles für neue Staffing-Features
+   Lädt zuletzt (nach zzz-polish.css). Rein additiv.
+     1. Bedarf-vs-Deckung: KPI-Varianten, Gap-Liste, Gap-Pills
+     2. Abwesenheiten: shift-pill--absent, Plan-Badge
+     3. Personalplan: Such-/Filterleiste
+   Nutzt die bestehenden Design-Tokens (var(--color-…)).
+   ============================================================= */
+
+/* ---------- 1. KPI-Sub-Varianten (positiv/warnung ergänzt) ---------- */
+.kpi-card__sub--positive { color: #15803d; }
+.kpi-card__sub--warning  { color: #b45309; }
+/* error/neutral werden bereits vom bestehenden Stylesheet gestylt. */
+
+/* ---------- 1. Gap-Liste (Deckung je Stunde) ---------- */
+.gap-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+}
+.gap-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--color-surface-container-low, #f3f4f5);
+    border: 1px solid var(--color-outline-variant, #e1e3e4);
+}
+.gap-row__hour {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    min-width: 52px;
+    color: var(--color-on-surface, #191c1d);
+}
+.gap-row__bars {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    color: var(--color-on-surface-variant, #44474e);
+    font-size: 13px;
+}
+.gap-row__arrow { opacity: 0.5; }
+.gap-row__req   { font-weight: 600; }
+.gap-row__sched { font-weight: 600; }
+.gap-row__empty,
+.plan-grid__noresult {
+    padding: 18px;
+    text-align: center;
+    color: var(--color-on-surface-variant, #44474e);
+    font-size: 14px;
+}
+
+/* Gap-Pills */
+.gap-pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.gap-pill--under { background: #fdecec; color: #b3261e; }
+.gap-pill--over  { background: #e7f3ec; color: #15803d; }
+.gap-pill--ok    { background: var(--color-surface-container, #edeeef); color: #44474e; }
+
+/* ---------- 2. Abwesenheit ---------- */
+.shift-pill--absent {
+    background: #f3e8ff;
+    color: #7e22ce;
+}
+.plan-grid__person-nameline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.plan-grid__absence-badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: #f3e8ff;
+    color: #7e22ce;
+}
+
+/* ---------- 3. Such-/Filterleiste Personalplan ---------- */
+.plan-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.plan-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.plan-controls__search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: var(--color-surface-container-low, #f3f4f5);
+    border: 1px solid var(--color-outline-variant, #d5d7dc);
+}
+.plan-controls__search .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--color-on-surface-variant, #5b6470);
+}
+.plan-controls__input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--color-on-surface, #191c1d);
+    min-width: 180px;
+}
+.plan-controls__dropdown {
+    min-width: 170px;
+    font-size: 14px;
+}
+
+/* ---------- Dark-Mode-Overrides ---------- */
+html[data-theme="dark"] .gap-row {
+    background: #171c24;
+    border-color: #2a313b;
+}
+html[data-theme="dark"] .gap-row__hour   { color: #e3e5e8; }
+html[data-theme="dark"] .gap-row__bars   { color: #9aa0aa; }
+html[data-theme="dark"] .gap-pill--under { background: #3a1d1d; color: #f4a3a3; }
+html[data-theme="dark"] .gap-pill--over  { background: #16301f; color: #86efac; }
+html[data-theme="dark"] .gap-pill--ok    { background: #232a33; color: #c8cdd6; }
+html[data-theme="dark"] .gap-row__empty,
+html[data-theme="dark"] .plan-grid__noresult { color: #9aa0aa; }
+
+html[data-theme="dark"] .shift-pill--absent,
+html[data-theme="dark"] .plan-grid__absence-badge {
+    background: #2c1f3d; color: #d8b4fe;
+}
+
+html[data-theme="dark"] .plan-controls__search {
+    background: #171c24; border-color: #2a313b;
+}
+html[data-theme="dark"] .plan-controls__input { color: #e3e5e8; }
+html[data-theme="dark"] .kpi-card__sub--positive { color: #86efac; }
+html[data-theme="dark"] .kpi-card__sub--warning  { color: #fcd34d; }

@@ -42,12 +42,13 @@ _ROLE_AVATAR = {
 }
 
 
-def _status_pill(status: str) -> html.Span:
+def _status_pill(status: str, absence_label: str | None = None) -> html.Span:
     labels = {
         "active":  ("Aktiv",      "shift-pill shift-pill--active"),
         "break":   ("Pause",      "shift-pill shift-pill--break"),
         "coming":  ("Kommt noch", "shift-pill shift-pill--coming"),
         "done":    ("Fertig",     "shift-pill shift-pill--done"),
+        "absent":  (absence_label or "Abwesend", "shift-pill shift-pill--absent"),
     }
     text, cls = labels.get(status, ("–", "shift-pill"))
     return html.Span(text, className=cls)
@@ -62,7 +63,7 @@ def _shift_row(s: dict) -> html.Div:
             html.Span(s["role"], className="shift-row__role"),
         ]),
         html.Span(f"{s['start']} – {s['end']}", className="shift-row__time"),
-        _status_pill(s["status"]),
+        _status_pill(s["status"], s.get("absence_label")),
     ])
 
 
@@ -71,12 +72,13 @@ def _build_shift_content() -> list:
     shifts  = get_todays_shifts()
     summary = get_shift_summary()
 
-    active_rows = [s for s in shifts if s["status"] in ("active", "break")]
-    coming_rows = [s for s in shifts if s["status"] == "coming"]
+    active_rows  = [s for s in shifts if s["status"] in ("active", "break")]
+    coming_rows  = [s for s in shifts if s["status"] == "coming"]
+    absent_rows  = [s for s in shifts if s["status"] == "absent"]
 
     coverage_pct = summary["coverage_pct"]
     coverage_label = (
-        f"{summary['active_now']} von {summary['total_today']} Mitarbeitern aktiv"
+        f"{summary['active_now']} von {summary['planned']} verfügbaren aktiv"
     )
 
     rows: list = []
@@ -91,6 +93,14 @@ def _build_shift_content() -> list:
             html.Div("Später heute", className="shift-overview__separator")
         )
         for s in coming_rows:
+            rows.append(_shift_row(s))
+
+    # Abwesende zuletzt, klar abgesetzt
+    if absent_rows:
+        rows.append(
+            html.Div("Abwesend heute", className="shift-overview__separator")
+        )
+        for s in absent_rows:
             rows.append(_shift_row(s))
 
     return [
@@ -125,8 +135,29 @@ def _build_shift_content() -> list:
                 ),
             ]),
         ]),
-        html.Div(className="shift-overview__list", children=rows),
+        html.Div(
+            className="shift-overview__list",
+            children=rows if rows else [_shift_empty_state(summary)],
+        ),
     ]
+
+
+def _shift_empty_state(summary: dict) -> html.Div:
+    """Freundlicher Leerzustand, wenn gerade niemand im Dienst ist."""
+    if summary["total_today"] == 0:
+        title = "Heute keine Schichten geplant"
+        sub = "Für heute ist niemand im Dienstplan eingetragen."
+    else:
+        title = "Aktuell niemand im Dienst"
+        sub = (f"Alle {summary['total_today']} heutigen Schichten sind beendet "
+               "oder starten später.")
+    return html.Div(className="shift-overview__empty", children=[
+        html.Span("nights_stay", className="material-symbols-outlined"),
+        html.Div(className="shift-overview__empty-text", children=[
+            html.Div(title, className="shift-overview__empty-title"),
+            html.Div(sub, className="shift-overview__empty-sub"),
+        ]),
+    ])
 
 
 def render_shift_overview() -> html.Div:

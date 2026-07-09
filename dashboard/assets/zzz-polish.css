@@ -1,0 +1,244 @@
+/* =============================================================
+   zzz-polish.css – UI/UX-Feinschliff
+   Lädt zuletzt (alphabetisch nach styles.css & dark.css) und
+   verfeinert gezielt Abstände, Tiefe, Hover und Dark-Mode.
+   Rein additiv – keine Struktur-/Layoutänderungen.
+   ============================================================= */
+
+/* ---------- 0. Icon-Stabilität (kein Flash/Sprung) ---------- */
+
+/* Solange die Material-Symbols-Schrift noch lädt, würde der Ligatur-Text
+   ("database" …) als normaler Text erscheinen und das Layout sprengen.
+   Feste Box + clip verhindert den Sprung; sichtbar wird nur das fertige Icon. */
+.material-symbols-outlined {
+    width: 1em; min-width: 1em; height: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    justify-content: center;
+}
+/* Icons mit explizit größerer Schriftgröße behalten ihre Box (1em skaliert mit) */
+
+/* Sidebar-Links: Layout fixieren, damit Label nicht nach rechts springt */
+.sidebar__nav-link { justify-content: flex-start; }
+.sidebar__nav-link .material-symbols-outlined { font-size: 20px; flex-shrink: 0; }
+
+
+/* ---------- 1. Feinschliff Light ---------------------------- */
+
+/* Weichere, mehrlagige Schatten + etwas größerer Radius für Karten */
+.card,
+.kpi-card,
+.chart-card,
+.actions-card,
+.shift-overview,
+.plan-card {
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04),
+                0 4px 12px rgba(16, 24, 40, 0.06);
+    transition: box-shadow 200ms ease, transform 200ms ease, border-color 200ms ease;
+}
+
+/* Dezenter Lift beim Hovern interaktiver Karten */
+.kpi-card:hover {
+    box-shadow: 0 2px 4px rgba(16, 24, 40, 0.06),
+                0 8px 24px rgba(16, 24, 40, 0.10);
+    transform: translateY(-2px);
+    border-color: #b9c0cc;
+}
+
+/* KPI-Hierarchie: Label ruhiger, Wert klarer, Akzentlinie links */
+.kpi-card {
+    position: relative;
+    padding-left: 18px;
+}
+.kpi-card::before {
+    content: "";
+    position: absolute; left: 0; top: 14px; bottom: 14px;
+    width: 3px; border-radius: 3px;
+    background: #659dfe; opacity: 0.0;
+    transition: opacity 200ms ease;
+}
+.kpi-card:hover::before { opacity: 0.9; }
+.kpi-card__label { color: #5b6470; }
+.kpi-card__value { letter-spacing: -0.03em; }
+
+/* Akzentstreifen am aktiven Sidebar-Eintrag */
+.sidebar__nav-link--active {
+    position: relative;
+    box-shadow: inset 3px 0 0 #003370;
+}
+
+/* Card-Header: feinere Trennlinie */
+.card__header,
+.chart-card__header,
+.actions-card__header {
+    border-bottom-color: #e6e8ec;
+}
+
+/* Dashboard-Hint: dezenter, mit Pfeil-Bewegung statt Vollfläche */
+.dashboard-hint {
+    background: #eef3fc;
+    border-color: #d4e0f5;
+    border-radius: 12px;
+    font-weight: 500;
+}
+.dashboard-hint:hover { background: #e2ebfa; }
+.dashboard-hint .material-symbols-outlined { transition: transform 200ms ease; }
+.dashboard-hint:hover .material-symbols-outlined { transform: translateX(3px); }
+
+/* Topbar-Buttons: rundere, modernere Form */
+.topbar__icon-btn { border-radius: 10px; transition: all 150ms ease; }
+
+/* Charts: weiche Ecken */
+.dash-graph, .js-plotly-plot { border-radius: 8px; }
+
+/* ---------- 2. Leerzustand „Aktuelle Schicht" --------------- */
+
+.shift-overview__empty {
+    display: flex; align-items: center; gap: 14px;
+    padding: 22px 16px; margin-top: 4px;
+    border: 1px dashed #c9cdd6; border-radius: 12px;
+    background: #fafbfc;
+}
+.shift-overview__empty .material-symbols-outlined {
+    font-size: 28px; color: #8a93a3; flex-shrink: 0;
+}
+.shift-overview__empty-title {
+    font-size: 15px; font-weight: 600; color: #2b313b;
+}
+.shift-overview__empty-sub {
+    font-size: 13px; color: #6b7280; margin-top: 2px;
+}
+
+/* ---------- 3. Dark-Mode: tiefere, klarere Ebenen ----------- */
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] #react-entry-point,
+html[data-theme="dark"] .main-canvas {
+    background: #0b0e14;
+}
+html[data-theme="dark"] .sidebar  { background: #11151c; border-right-color: #232b36; }
+html[data-theme="dark"] .topbar   { background: #0b0e14; border-bottom-color: #232b36; }
+
+/* Karten: eine Stufe heller als der Hintergrund = klare Trennung */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .kpi-card,
+html[data-theme="dark"] .chart-card,
+html[data-theme="dark"] .actions-card,
+html[data-theme="dark"] .shift-overview,
+html[data-theme="dark"] .plan-card {
+    background: #161b23;
+    border-color: #262e3a;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.35),
+                0 6px 18px rgba(0,0,0,0.30);
+}
+html[data-theme="dark"] .kpi-card:hover {
+    border-color: #3a4555;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4),
+                0 10px 28px rgba(0,0,0,0.45);
+}
+html[data-theme="dark"] .kpi-card::before { background: #4f8ce6; }
+
+/* Dunkle Akzentkarte (Tagesübersicht / Modell-Intro) */
+html[data-theme="dark"] .card--dark {
+    background: #0a1426; border-color: #1d3354;
+}
+
+/* Sub-Header-Flächen eine Spur abheben */
+html[data-theme="dark"] .actions-card__header,
+html[data-theme="dark"] .plan-card__header,
+html[data-theme="dark"] .plan-grid__row--head {
+    background: #11151c;
+}
+
+/* Aktiver Sidebar-Link: kräftiger, mit Akzentkante */
+html[data-theme="dark"] .sidebar__nav-link--active {
+    background: #1b4a86; color: #ffffff;
+    box-shadow: inset 3px 0 0 #6ea8f0;
+}
+
+/* Coverage-Track / Fortschritt dezenter */
+html[data-theme="dark"] .shift-overview__coverage-track { background: #232b36; }
+
+/* Leerzustand im Dark-Mode */
+html[data-theme="dark"] .shift-overview__empty {
+    border-color: #2c3542; background: #11161e;
+}
+html[data-theme="dark"] .shift-overview__empty .material-symbols-outlined { color: #8a93a3; }
+html[data-theme="dark"] .shift-overview__empty-title { color: #e3e5e8; }
+html[data-theme="dark"] .shift-overview__empty-sub { color: #9aa0aa; }
+
+/* Dashboard-Hint im Dark-Mode */
+html[data-theme="dark"] .dashboard-hint {
+    background: #15233b; border-color: #244a7d;
+}
+html[data-theme="dark"] .dashboard-hint:hover { background: #1b2d4a; }
+
+/* Charts sind jetzt themen-bewusst (utils/chart_theme.py) – im Dark-Mode
+   nativ dunkel, daher keine helle Box mehr. */
+
+/* Sanfter globaler Übergang beim Theme-Wechsel */
+.card, .kpi-card, .chart-card, .actions-card, .shift-overview,
+.plan-card, .sidebar, .topbar, .main-canvas, .dashboard-hint {
+    transition: background-color 200ms ease, color 200ms ease,
+                border-color 200ms ease, box-shadow 200ms ease;
+}
+
+
+/* ---------- 4. Dichte, Mikro-Interaktionen, Feinheiten ------ */
+
+/* Sanftes Einblenden des Seiteninhalts beim Wechsel */
+@keyframes page-fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+#page-content > div { animation: page-fade-in 280ms ease both; }
+
+/* KPI-Werte zählen optisch ruhiger – Tabularziffern für gleiche Breite */
+.kpi-card__value, .summary-item__value, .weather-temp {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Status-Pills: kompakter, mit kleinem Status-Punkt davor */
+.shift-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: 999px; font-weight: 600;
+}
+.shift-pill::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; opacity: 0.8; flex-shrink: 0;
+}
+
+/* Schicht-Zeilen: dezenter Hover-Lift */
+.shift-row { transition: background-color 150ms ease, transform 150ms ease; }
+.shift-row:hover { transform: translateX(2px); }
+
+/* Coverage-Bar: sanfte Animation der Füllung */
+.shift-overview__coverage-fill { transition: width 500ms cubic-bezier(.4,0,.2,1); }
+
+/* Wochenend-Spalten im Wochenplan dezenter (Sa = 6., So = 7. Spalte) */
+.plan-grid__row > .plan-grid__dayhead:nth-child(7),
+.plan-grid__row > .plan-grid__dayhead:nth-child(8),
+.plan-grid__row > .plan-grid__cell:nth-child(7),
+.plan-grid__row > .plan-grid__cell:nth-child(8) {
+    background-image: linear-gradient(rgba(0,0,0,0.015), rgba(0,0,0,0.015));
+}
+html[data-theme="dark"] .plan-grid__row > .plan-grid__cell:nth-child(7),
+html[data-theme="dark"] .plan-grid__row > .plan-grid__cell:nth-child(8) {
+    background-image: linear-gradient(rgba(255,255,255,0.02), rgba(255,255,255,0.02));
+}
+
+/* Chart-Karten: Graph nicht am Rand kleben */
+.chart-card .dash-graph { margin-top: 2px; }
+
+/* Topbar-Buttons leicht anheben beim Hovern */
+.topbar__icon-btn:hover { transform: translateY(-1px); }
+
+/* Scrollbar im Dark-Mode dezent */
+html[data-theme="dark"] ::-webkit-scrollbar { width: 10px; height: 10px; }
+html[data-theme="dark"] ::-webkit-scrollbar-track { background: #0e1116; }
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #2a313b; border-radius: 6px; border: 2px solid #0e1116;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #3a4350; }
